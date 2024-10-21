@@ -5,7 +5,7 @@ CLASS zcl_value_object DEFINITION PUBLIC ABSTRACT CREATE PUBLIC.
     "! Compares two objects for value-based equality
     METHODS is_equal_to
       IMPORTING i_other         TYPE REF TO zcl_value_object
-      RETURNING VALUE(r_result) TYPE abap_bool.
+      RETURNING VALUE(r_result) TYPE abap_bool .
 
   PROTECTED SECTION.
     "! Abstract method to create a hash representing the object's state. When redefining this method,
