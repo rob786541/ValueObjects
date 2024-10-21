@@ -36,8 +36,8 @@ CLASS zcl_value_object IMPLEMENTATION.
         IF hash_generator IS NOT BOUND.
           hash_generator = cl_abap_message_digest=>get_instance( ).
         ENDIF.
-        CALL TRANSFORMATION id SOURCE root = i_data->* RESULT XML FINAL(l_xstring).
-        hash_generator->update( if_data = l_xstring ).
+        CALL TRANSFORMATION id SOURCE root = i_data->* RESULT XML FINAL(xstring).
+        hash_generator->update( if_data = xstring ).
       CATCH cx_abap_message_digest.
         " This exception is not expected to be thrown.
         ASSERT 0 = 1.
