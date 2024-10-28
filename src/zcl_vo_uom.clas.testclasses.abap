@@ -77,17 +77,13 @@ CLASS ltcl_uom IMPLEMENTATION.
   ENDMETHOD.
 
   METHOD performance.
-    DATA uoms TYPE STANDARD TABLE OF meins.
-    DATA i    TYPE i.
+    DATA i TYPE i.
 
-    uoms = VALUE #( ( 'st' )
-                    ( 'to' )
-                    ( 'pak' )
-                    ( 'kg' ) ).
+    SELECT mseh3 FROM t006b INTO TABLE @DATA(uoms) UP TO 100 ROWS.
     DO 50000 TIMES.
       i += 1.
-      cut = NEW #( uoms[ i ] ).
-      i = COND #( WHEN i = 4 THEN 0 ).
+      cut = NEW #( uoms[ i ]-mseh3 ).
+      i = COND #( WHEN i = 100 THEN 0 ).
     ENDDO.
   ENDMETHOD.
 
