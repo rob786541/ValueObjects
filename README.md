@@ -6,3 +6,5 @@ This repository provides a collection of value objects, including:
 * ...
 
 The [abstract superclass](src/zcl_value_object.clas.abap) provides core functionality for all value objects.
+
+ABAP Version: 757 SP4 or higher.
