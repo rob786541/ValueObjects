@@ -12,6 +12,8 @@ CLASS zcl_vo_date DEFINITION PUBLIC INHERITING FROM zcl_value_object CREATE PUBL
     METHODS get_time
       RETURNING VALUE(r_result) TYPE t.
 
+    METHODS is_valid REDEFINITION.
+
   PROTECTED SECTION.
     METHODS create_hash REDEFINITION.
 
@@ -33,17 +35,6 @@ CLASS zcl_vo_date IMPLEMENTATION.
       date = i_date.
     ENDIF.
     time = i_time.
-    TRY.
-        cl_abap_tstmp=>make_valid_time( EXPORTING date_in    = date
-                                                  time_in    = time
-                                                  time_zone  = cl_abap_context_info=>get_user_time_zone( )
-                                        IMPORTING date_valid = date
-                                                  time_valid = time ).
-      CATCH cx_parameter_invalid_range cx_tstmp_internal_error cx_abap_context_info_error.
-        CLEAR date.
-        CLEAR time.
-        RETURN.
-    ENDTRY.
   ENDMETHOD.
 
   METHOD get_date.
@@ -58,5 +49,19 @@ CLASS zcl_vo_date IMPLEMENTATION.
     add_to_hash( REF #( date ) ).
     add_to_hash( REF #( time ) ).
     r_result = build_hash( ).
+  ENDMETHOD.
+
+  METHOD is_valid.
+    TRY.
+
+        cl_abap_tstmp=>make_valid_time( EXPORTING date_in    = date
+                                                  time_in    = time
+                                                  time_zone  = cl_abap_context_info=>get_user_time_zone( )
+                                        IMPORTING date_valid = date
+                                                  time_valid = time ).
+        r_result = abap_true.
+      CATCH cx_parameter_invalid_range cx_tstmp_internal_error cx_abap_context_info_error.
+        r_result = abap_false.
+    ENDTRY.
   ENDMETHOD.
 ENDCLASS.

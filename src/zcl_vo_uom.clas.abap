@@ -5,36 +5,38 @@ CLASS zcl_vo_uom DEFINITION PUBLIC INHERITING FROM zcl_value_object CREATE PUBLI
 
   PUBLIC SECTION.
     CLASS-METHODS _get_in
-      IMPORTING i_uom           TYPE meins
-      RETURNING VALUE(r_result) TYPE meins.
+      IMPORTING i_uom           TYPE msehi
+      RETURNING VALUE(r_result) TYPE msehi.
 
     CLASS-METHODS _get_out
-      IMPORTING i_uom           TYPE meins
-      RETURNING VALUE(r_result) TYPE meins.
+      IMPORTING i_uom           TYPE msehi
+      RETURNING VALUE(r_result) TYPE msehi.
 
     METHODS get_in
-      RETURNING VALUE(r_result) TYPE meins.
+      RETURNING VALUE(r_result) TYPE msehi.
 
     METHODS get_out
-      RETURNING VALUE(r_result) TYPE meins.
+      RETURNING VALUE(r_result) TYPE msehi.
 
     "! The UOM needs to be unique within a language. If there is an input, which uses the output of another one, it no longer works.
     "! This is not the case in the SAP standard. For this reason, no distinction is made
     "! between IN and OUT when instantiating. Check unit test integrity to be sure, that your system is ok
     "!
-    "! @parameter i_meins | internal or external unit of measurement
+    "! @parameter i_msehi | internal or external unit of measurement
     METHODS constructor
-      IMPORTING i_meins TYPE meins.
+      IMPORTING i_msehi TYPE msehi.
+
+    METHODS is_valid REDEFINITION.
 
   PROTECTED SECTION.
     METHODS create_hash REDEFINITION.
 
   PRIVATE SECTION.
     METHODS set_if_still_intitial
-      IMPORTING i_uom TYPE meins.
+      IMPORTING i_uom TYPE msehi.
 
-    DATA in  TYPE meins.
-    DATA out TYPE meins.
+    DATA in  TYPE msehi.
+    DATA out TYPE msehi.
 
 ENDCLASS.
 
@@ -48,7 +50,7 @@ CLASS zcl_vo_uom IMPLEMENTATION.
   METHOD constructor.
     super->constructor( ).
 
-    DATA(uom) = conv meins( to_upper( i_meins ) ).
+    DATA(uom) = CONV msehi( to_upper( i_msehi ) ).
     in = _get_in( uom ).
     out = _get_out( uom ).
     set_if_still_intitial( uom ).
@@ -93,5 +95,16 @@ CLASS zcl_vo_uom IMPLEMENTATION.
 
   METHOD get_out.
     r_result = out.
+  ENDMETHOD.
+
+  METHOD is_valid.
+    IF in IS INITIAL.
+      r_result = abap_false.
+      RETURN.
+    ENDIF.
+    SELECT SINGLE @abap_true FROM t006 WHERE msehi = @in INTO @DATA(found).
+    IF found = abap_true.
+      r_result = abap_true.
+    ENDIF.
   ENDMETHOD.
 ENDCLASS.

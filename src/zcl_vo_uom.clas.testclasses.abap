@@ -12,6 +12,8 @@ CLASS ltcl_uom DEFINITION FINAL
     METHODS enter_to_ton       FOR TESTING.
     METHODS integrity          FOR TESTING.
     METHODS performance        FOR TESTING.
+    METHODS valid              FOR TESTING.
+
 ENDCLASS.
 
 
@@ -106,5 +108,14 @@ CLASS ltcl_uom IMPLEMENTATION.
         ENDIF.
       ENDLOOP.
     ENDLOOP.
+  ENDMETHOD.
+
+  METHOD valid.
+    cut = NEW #( '' ).
+    cl_abap_unit_assert=>assert_false( act = cut->is_valid( ) ).
+    cut = NEW #( 'asd' ).
+    cl_abap_unit_assert=>assert_false( act = cut->is_valid( ) ).
+    cut = NEW #( 'to' ).
+    cl_abap_unit_assert=>assert_true( act = cut->is_valid( ) ).
   ENDMETHOD.
 ENDCLASS.
