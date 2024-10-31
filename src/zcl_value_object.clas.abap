@@ -43,8 +43,7 @@ CLASS zcl_value_object IMPLEMENTATION.
         CALL TRANSFORMATION id SOURCE root = i_data->* RESULT XML FINAL(xstring).
         hash_generator->update( if_data = xstring ).
       CATCH cx_abap_message_digest.
-        " This exception is not expected to be thrown.
-        ASSERT 0 = 1.
+        RAISE SHORTDUMP NEW cx_sy_create_object_error( ).
     ENDTRY.
   ENDMETHOD.
 
@@ -54,8 +53,7 @@ CLASS zcl_value_object IMPLEMENTATION.
         r_result = hash_generator->to_string( ).
         CLEAR hash_generator.
       CATCH cx_abap_message_digest.
-        " This exception is not expected to be thrown.
-        ASSERT 0 = 1.
+        RAISE SHORTDUMP NEW cx_sy_create_object_error( ).
     ENDTRY.
   ENDMETHOD.
 ENDCLASS.

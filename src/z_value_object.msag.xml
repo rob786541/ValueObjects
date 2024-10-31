@@ -26,6 +26,12 @@
      <MSGNR>003</MSGNR>
      <TEXT>UOM &amp;1 is not valid</TEXT>
     </T100>
+    <T100>
+     <SPRSL>E</SPRSL>
+     <ARBGB>Z_VALUE_OBJECT</ARBGB>
+     <MSGNR>004</MSGNR>
+     <TEXT>UOM &amp;1 is not a valid mass dimension</TEXT>
+    </T100>
    </T100>
   </asx:values>
  </asx:abap>
