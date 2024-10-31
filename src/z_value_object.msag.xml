@@ -1,0 +1,32 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<abapGit version="v1.0.0" serializer="LCL_OBJECT_MSAG" serializer_version="v1.0.0">
+ <asx:abap xmlns:asx="http://www.sap.com/abapxml" version="1.0">
+  <asx:values>
+   <T100A>
+    <ARBGB>Z_VALUE_OBJECT</ARBGB>
+    <MASTERLANG>E</MASTERLANG>
+    <STEXT>Messages for all value objects</STEXT>
+   </T100A>
+   <T100>
+    <T100>
+     <SPRSL>E</SPRSL>
+     <ARBGB>Z_VALUE_OBJECT</ARBGB>
+     <MSGNR>001</MSGNR>
+     <TEXT>Date &amp;1 or time &amp;2 is not valid</TEXT>
+    </T100>
+    <T100>
+     <SPRSL>E</SPRSL>
+     <ARBGB>Z_VALUE_OBJECT</ARBGB>
+     <MSGNR>002</MSGNR>
+     <TEXT>Empty UOM is not allowed</TEXT>
+    </T100>
+    <T100>
+     <SPRSL>E</SPRSL>
+     <ARBGB>Z_VALUE_OBJECT</ARBGB>
+     <MSGNR>003</MSGNR>
+     <TEXT>UOM &amp;1 is not valid</TEXT>
+    </T100>
+   </T100>
+  </asx:values>
+ </asx:abap>
+</abapGit>

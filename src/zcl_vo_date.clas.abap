@@ -4,7 +4,8 @@ CLASS zcl_vo_date DEFINITION PUBLIC INHERITING FROM zcl_value_object CREATE PUBL
   PUBLIC SECTION.
     METHODS constructor
       IMPORTING i_date TYPE d OPTIONAL
-                i_time TYPE t OPTIONAL.
+                i_time TYPE t OPTIONAL
+      RAISING   zcx_value_object.
 
     METHODS get_date
       RETURNING VALUE(r_result) TYPE d.
@@ -12,10 +13,9 @@ CLASS zcl_vo_date DEFINITION PUBLIC INHERITING FROM zcl_value_object CREATE PUBL
     METHODS get_time
       RETURNING VALUE(r_result) TYPE t.
 
-    METHODS is_valid REDEFINITION.
-
   PROTECTED SECTION.
     METHODS create_hash REDEFINITION.
+    METHODS is_valid    REDEFINITION.
 
   PRIVATE SECTION.
     CONSTANTS initial_date TYPE d VALUE '00000000'.
@@ -35,6 +35,10 @@ CLASS zcl_vo_date IMPLEMENTATION.
       date = i_date.
     ENDIF.
     time = i_time.
+
+    IF NOT is_valid( ).
+      RAISE EXCEPTION TYPE zcx_value_object MESSAGE e001(z_value_object) WITH i_date i_time.
+    ENDIF.
   ENDMETHOD.
 
   METHOD get_date.
@@ -53,7 +57,6 @@ CLASS zcl_vo_date IMPLEMENTATION.
 
   METHOD is_valid.
     TRY.
-
         cl_abap_tstmp=>make_valid_time( EXPORTING date_in    = date
                                                   time_in    = time
                                                   time_zone  = cl_abap_context_info=>get_user_time_zone( )

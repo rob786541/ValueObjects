@@ -3,6 +3,7 @@ CLASS ltcl_uom DEFINITION FINAL
 
   PRIVATE SECTION.
     DATA cut TYPE REF TO zcl_vo_uom.
+    DATA e   TYPE REF TO zcx_value_object.
 
     METHODS enter_out          FOR TESTING.
     METHODS enter_in           FOR TESTING.
@@ -12,81 +13,104 @@ CLASS ltcl_uom DEFINITION FINAL
     METHODS enter_to_ton       FOR TESTING.
     METHODS integrity          FOR TESTING.
     METHODS performance        FOR TESTING.
-    METHODS valid              FOR TESTING.
 
 ENDCLASS.
 
 
 CLASS ltcl_uom IMPLEMENTATION.
   METHOD enter_out.
-    cut = NEW #( 'PC' ).
-    cl_abap_unit_assert=>assert_equals( exp = 'ST'
-                                        act = cut->get_in( ) ).
-    cl_abap_unit_assert=>assert_equals( exp = 'PC'
-                                        act = cut->get_out( ) ).
+    TRY.
+        cut = NEW #( 'PC' ).
+        cl_abap_unit_assert=>assert_equals( exp = 'ST'
+                                            act = cut->get_in( ) ).
+        cl_abap_unit_assert=>assert_equals( exp = 'PC'
+                                            act = cut->get_out( ) ).
+      CATCH zcx_value_object.
+        cl_abap_unit_assert=>fail( ).
+    ENDTRY.
   ENDMETHOD.
 
   METHOD enter_in.
-    cut = NEW #( 'ST' ).
-    cl_abap_unit_assert=>assert_equals( exp = 'ST'
-                                        act = cut->get_in( ) ).
-    cl_abap_unit_assert=>assert_equals( exp = 'PC'
-                                        act = cut->get_out( ) ).
+    TRY.
+        cut = NEW #( 'ST' ).
+        cl_abap_unit_assert=>assert_equals( exp = 'ST'
+                                            act = cut->get_in( ) ).
+        cl_abap_unit_assert=>assert_equals( exp = 'PC'
+                                            act = cut->get_out( ) ).
+      CATCH zcx_value_object.
+        cl_abap_unit_assert=>fail( ).
+    ENDTRY.
   ENDMETHOD.
 
   METHOD enter_non_existing.
-    cut = NEW #( 'asd' ).
-    cl_abap_unit_assert=>assert_equals( exp = ''
-                                        act = cut->get_in( ) ).
-    cl_abap_unit_assert=>assert_equals( exp = ''
-                                        act = cut->get_out( ) ).
+    TRY.
+        cut = NEW #( 'asd' ).
+        cl_abap_unit_assert=>fail( ).
+      CATCH zcx_value_object INTO e.
+        cl_abap_unit_assert=>assert_equals( exp = 'UOM asd is not valid'
+                                            act = e->get_text( ) ).
+    ENDTRY.
   ENDMETHOD.
 
   METHOD enter_empty.
-    cut = NEW #( '' ).
-    cl_abap_unit_assert=>assert_equals( exp = ''
-                                        act = cut->get_in( ) ).
-    cl_abap_unit_assert=>assert_equals( exp = ''
-                                        act = cut->get_out( ) ).
+    TRY.
+        cut = NEW #( '' ).
+        cl_abap_unit_assert=>fail( ).
+      CATCH zcx_value_object INTO e.
+        cl_abap_unit_assert=>assert_equals( exp = 'Empty UOM is not allowed'
+                                            act = e->get_text( ) ).
+    ENDTRY.
   ENDMETHOD.
 
   METHOD enter_lower.
-    cut = NEW #( 'kg' ).
-    cl_abap_unit_assert=>assert_equals( exp = 'KG'
-                                        act = cut->get_in( ) ).
-    cl_abap_unit_assert=>assert_equals( exp = 'KG'
-                                        act = cut->get_out( ) ).
+    TRY.
+        cut = NEW #( 'kg' ).
+        cl_abap_unit_assert=>assert_equals( exp = 'KG'
+                                            act = cut->get_in( ) ).
+        cl_abap_unit_assert=>assert_equals( exp = 'KG'
+                                            act = cut->get_out( ) ).
+      CATCH zcx_value_object.
+        cl_abap_unit_assert=>fail( ).
+    ENDTRY.
   ENDMETHOD.
 
   METHOD enter_to_ton.
-    cut = NEW #( 'to' ).
-    cl_abap_unit_assert=>assert_equals( exp = 'TO'
-                                        act = cut->get_in( ) ).
-    cl_abap_unit_assert=>assert_equals( exp = 'TO'
-                                        act = cut->get_out( ) ).
+    TRY.
+        cut = NEW #( 'to' ).
+        cl_abap_unit_assert=>assert_equals( exp = 'TO'
+                                            act = cut->get_in( ) ).
+        cl_abap_unit_assert=>assert_equals( exp = 'TO'
+                                            act = cut->get_out( ) ).
 
-    cut = NEW #( 'ton' ).
-    cl_abap_unit_assert=>assert_equals( exp = 'TON'
-                                        act = cut->get_in( ) ).
-    cl_abap_unit_assert=>assert_equals( exp = 'TON'
-                                        act = cut->get_out( ) ).
-    sy-langu = 'F'.
-    cut = NEW #( 'to' ).
-    cl_abap_unit_assert=>assert_equals( exp = 'TO'
-                                        act = cut->get_in( ) ).
-    cl_abap_unit_assert=>assert_equals( exp = 'TON'
-                                        act = cut->get_out( ) ).
+        cut = NEW #( 'ton' ).
+        cl_abap_unit_assert=>assert_equals( exp = 'TON'
+                                            act = cut->get_in( ) ).
+        cl_abap_unit_assert=>assert_equals( exp = 'TON'
+                                            act = cut->get_out( ) ).
+        sy-langu = 'F'.
+        cut = NEW #( 'to' ).
+        cl_abap_unit_assert=>assert_equals( exp = 'TO'
+                                            act = cut->get_in( ) ).
+        cl_abap_unit_assert=>assert_equals( exp = 'TON'
+                                            act = cut->get_out( ) ).
+      CATCH zcx_value_object.
+        cl_abap_unit_assert=>fail( ).
+    ENDTRY.
   ENDMETHOD.
 
   METHOD performance.
     DATA i TYPE i.
 
-    SELECT mseh3 FROM t006b INTO TABLE @DATA(uoms) UP TO 100 ROWS.
-    DO 50000 TIMES.
-      i += 1.
-      cut = NEW #( uoms[ i ]-mseh3 ).
-      i = COND #( WHEN i = 100 THEN 0 ).
-    ENDDO.
+    TRY.
+        SELECT msehi FROM t006 INTO TABLE @DATA(uoms) UP TO 100 ROWS.
+        DO 50000 TIMES.
+          i += 1.
+          cut = NEW #( uoms[ i ]-msehi ).
+          i = COND #( WHEN i = 100 THEN 0 ).
+        ENDDO.
+      CATCH zcx_value_object.
+        cl_abap_unit_assert=>fail( ).
+    ENDTRY.
   ENDMETHOD.
 
   METHOD integrity.
@@ -108,14 +132,5 @@ CLASS ltcl_uom IMPLEMENTATION.
         ENDIF.
       ENDLOOP.
     ENDLOOP.
-  ENDMETHOD.
-
-  METHOD valid.
-    cut = NEW #( '' ).
-    cl_abap_unit_assert=>assert_false( act = cut->is_valid( ) ).
-    cut = NEW #( 'asd' ).
-    cl_abap_unit_assert=>assert_false( act = cut->is_valid( ) ).
-    cut = NEW #( 'to' ).
-    cl_abap_unit_assert=>assert_true( act = cut->is_valid( ) ).
   ENDMETHOD.
 ENDCLASS.

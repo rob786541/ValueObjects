@@ -7,9 +7,6 @@ CLASS zcl_value_object DEFINITION PUBLIC ABSTRACT CREATE PUBLIC.
       IMPORTING i_other         TYPE REF TO zcl_value_object
       RETURNING VALUE(r_result) TYPE abap_bool.
 
-      methods is_valid ABSTRACT
-      returning value(r_result) type abap_bool.
-
   PROTECTED SECTION.
     "! Abstract method to create a hash representing the object's state. When redefining this method,
     "! ensure that for each value relevant to the equality comparison, you call ADD_TO_HASH. After all values
@@ -23,6 +20,9 @@ CLASS zcl_value_object DEFINITION PUBLIC ABSTRACT CREATE PUBLIC.
 
     METHODS build_hash
       RETURNING VALUE(r_result) TYPE string.
+
+    METHODS is_valid ABSTRACT
+      RETURNING VALUE(r_result) TYPE abap_bool.
 
   PRIVATE SECTION.
     DATA hash_generator TYPE REF TO cl_abap_message_digest.
