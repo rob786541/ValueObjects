@@ -5,7 +5,7 @@
    <VSEOCLASS>
     <CLSNAME>ZCL_VO_WEIGHT</CLSNAME>
     <LANGU>E</LANGU>
-    <DESCRIPT>VO</DESCRIPT>
+    <DESCRIPT>Immutable value object representing weight</DESCRIPT>
     <STATE>1</STATE>
     <CLSCCINCL>X</CLSCCINCL>
     <FIXPT>X</FIXPT>

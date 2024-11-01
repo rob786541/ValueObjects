@@ -17,7 +17,13 @@ CLASS ltcl_weight DEFINITION FINAL
     METHODS rounded1    FOR TESTING.
     METHODS rounded2    FOR TESTING.
     METHODS rounded3    FOR TESTING.
-
+    METHODS add1        FOR TESTING.
+    METHODS add2        FOR TESTING.
+    METHODS add3        FOR TESTING.
+    METHODS as_string1  FOR TESTING.
+    METHODS as_string2  FOR TESTING.
+    METHODS as_string3  FOR TESTING.
+    METHODS as_string4  FOR TESTING.
 ENDCLASS.
 
 
@@ -27,7 +33,7 @@ CLASS ltcl_weight IMPLEMENTATION.
         cut = NEW #( i_weight = 15
                      i_uom    = NEW #( 'KG' ) ).
         cl_abap_unit_assert=>assert_equals( exp = '15'
-                                            act = cut->get_weight_in( ) ).
+                                            act = cut->get_weight( ) ).
       CATCH zcx_value_object.
         cl_abap_unit_assert=>fail( ).
     ENDTRY.
@@ -38,7 +44,7 @@ CLASS ltcl_weight IMPLEMENTATION.
         cut = NEW #( i_weight = 15
                      i_uom    = NEW #( 'KG' ) ).
         cl_abap_unit_assert=>assert_equals( exp = '15000'
-                                            act = cut->get_weight_in( NEW #( 'G' ) ) ).
+                                            act = cut->get_weight( NEW #( 'G' ) ) ).
       CATCH zcx_value_object.
         cl_abap_unit_assert=>fail( ).
     ENDTRY.
@@ -60,7 +66,7 @@ CLASS ltcl_weight IMPLEMENTATION.
         cut = NEW #( i_weight = 15
                      i_uom    = NEW #( 'G' ) ).
         cl_abap_unit_assert=>assert_equals( exp = '0.015'
-                                            act = cut->get_weight_in( NEW #( 'kg' ) ) ).
+                                            act = cut->get_weight( NEW #( 'kg' ) ) ).
       CATCH zcx_value_object.
         cl_abap_unit_assert=>fail( ).
     ENDTRY.
@@ -71,7 +77,7 @@ CLASS ltcl_weight IMPLEMENTATION.
         cut = NEW #( i_weight = '152324123456.321654'
                      i_uom    = NEW #( 'to' ) ).
         cl_abap_unit_assert=>assert_equals( exp = '152324123456321654000'
-                                            act = cut->get_weight_in( NEW #( 'mg' ) ) ).
+                                            act = cut->get_weight( NEW #( 'mg' ) ) ).
       CATCH zcx_value_object.
         cl_abap_unit_assert=>fail( ).
     ENDTRY.
@@ -82,7 +88,7 @@ CLASS ltcl_weight IMPLEMENTATION.
         cut = NEW #( i_weight = '0.0000000123456'
                      i_uom    = NEW #( 'mg' ) ).
         cl_abap_unit_assert=>assert_equals( exp = '0.0000000000000000123456'
-                                            act = cut->get_weight_in( NEW #( 'to' ) ) ).
+                                            act = cut->get_weight( NEW #( 'to' ) ) ).
       CATCH zcx_value_object.
         cl_abap_unit_assert=>fail( ).
     ENDTRY.
@@ -93,7 +99,7 @@ CLASS ltcl_weight IMPLEMENTATION.
         cut = NEW #( i_weight = 15
                      i_uom    = NEW #( 'g' ) ).
         cl_abap_unit_assert=>assert_equals( exp = '0.03306936630275666237499779537557982'
-                                            act = cut->get_weight_in( NEW #( 'lb' ) ) ).
+                                            act = cut->get_weight( NEW #( 'lb' ) ) ).
       CATCH zcx_value_object.
         cl_abap_unit_assert=>fail( ).
     ENDTRY.
@@ -104,7 +110,7 @@ CLASS ltcl_weight IMPLEMENTATION.
         cut = NEW #( i_weight = 15
                      i_uom    = NEW #( 'G' ) ).
         cl_abap_unit_assert=>assert_equals( exp = '0.00001653468315137833118749889768778991'
-                                            act = cut->get_weight_in( NEW #( 'ton' ) ) ).
+                                            act = cut->get_weight( NEW #( 'ton' ) ) ).
       CATCH zcx_value_object.
         cl_abap_unit_assert=>fail( ).
     ENDTRY.
@@ -115,7 +121,7 @@ CLASS ltcl_weight IMPLEMENTATION.
         cut = NEW #( i_weight = 15
                      i_uom    = NEW #( 'LB' ) ).
         cl_abap_unit_assert=>assert_equals( exp = '6.80388'
-                                            act = cut->get_weight_in( NEW #( 'kg' ) ) ).
+                                            act = cut->get_weight( NEW #( 'kg' ) ) ).
       CATCH zcx_value_object.
         cl_abap_unit_assert=>fail( ).
     ENDTRY.
@@ -126,8 +132,8 @@ CLASS ltcl_weight IMPLEMENTATION.
         cut = NEW #( i_weight = 15
                      i_uom    = NEW #( 'LB' ) ).
         cl_abap_unit_assert=>assert_equals( exp = '7'
-                                            act = cut->get_weight_in_rounded( i_uom      = NEW #( 'kg' )
-                                                                              i_decimals = 0 ) ).
+                                            act = cut->get_weight_rounded( i_uom      = NEW #( 'kg' )
+                                                                           i_decimals = 0 ) ).
       CATCH zcx_value_object.
         cl_abap_unit_assert=>fail( ).
     ENDTRY.
@@ -138,7 +144,7 @@ CLASS ltcl_weight IMPLEMENTATION.
         cut = NEW #( i_weight = 15
                      i_uom    = NEW #( 'LB' ) ).
         cl_abap_unit_assert=>assert_equals( exp = '6.804'
-                                            act = cut->get_weight_in_rounded( i_uom = NEW #( 'kg' ) ) ).
+                                            act = cut->get_weight_rounded( i_uom = NEW #( 'kg' ) ) ).
       CATCH zcx_value_object.
         cl_abap_unit_assert=>fail( ).
     ENDTRY.
@@ -149,8 +155,94 @@ CLASS ltcl_weight IMPLEMENTATION.
         cut = NEW #( i_weight = 15
                      i_uom    = NEW #( 'G' ) ).
         cl_abap_unit_assert=>assert_equals( exp = '0.00001653468315137833118749889768778991'
-                                            act = cut->get_weight_in_rounded( i_uom      = NEW #( 'ton' )
-                                                                              i_decimals = 60 ) ).
+                                            act = cut->get_weight_rounded( i_uom      = NEW #( 'ton' )
+                                                                           i_decimals = 60 ) ).
+      CATCH zcx_value_object.
+        cl_abap_unit_assert=>fail( ).
+    ENDTRY.
+  ENDMETHOD.
+
+  METHOD add1.
+    TRY.
+        cut = NEW #( i_weight = 15
+                     i_uom    = NEW #( 'G' ) ).
+        DATA(to_add) = NEW zcl_vo_weight( i_weight = 15
+                                          i_uom    = NEW #( 'G' ) ).
+        cut = cut->add( to_add ).
+        cl_abap_unit_assert=>assert_equals( exp = '30'
+                                            act = cut->get_weight( i_uom = NEW #( 'g' ) ) ).
+      CATCH zcx_value_object.
+        cl_abap_unit_assert=>fail( ).
+    ENDTRY.
+  ENDMETHOD.
+
+  METHOD add2.
+    TRY.
+        cut = NEW #( i_weight = 15
+                     i_uom    = NEW #( 'G' ) ).
+        DATA(to_add) = NEW zcl_vo_weight( i_weight = 15
+                                          i_uom    = NEW #( 'kg' ) ).
+        cut = cut->add( to_add ).
+        cl_abap_unit_assert=>assert_equals( exp = '0.015015'
+                                            act = cut->get_weight( i_uom = NEW #( 'to' ) ) ).
+      CATCH zcx_value_object.
+        cl_abap_unit_assert=>fail( ).
+    ENDTRY.
+  ENDMETHOD.
+
+  METHOD add3.
+    TRY.
+        cut = NEW #( i_weight = 15
+                     i_uom    = NEW #( 'G' ) ).
+        DATA(to_add) = NEW zcl_vo_weight( i_weight = 0
+                                          i_uom    = NEW #( 'kg' ) ).
+        cut = cut->add( to_add ).
+        cl_abap_unit_assert=>assert_equals( exp = '0.000015'
+                                            act = cut->get_weight( i_uom = NEW #( 'to' ) ) ).
+      CATCH zcx_value_object.
+        cl_abap_unit_assert=>fail( ).
+    ENDTRY.
+  ENDMETHOD.
+
+  METHOD as_string1.
+    TRY.
+        cut = NEW #( i_weight = 15
+                     i_uom    = NEW #( 'kg' ) ).
+        cl_abap_unit_assert=>assert_equals( exp = '15'
+                                            act = cut->as_string( ) ).
+      CATCH zcx_value_object.
+        cl_abap_unit_assert=>fail( ).
+    ENDTRY.
+  ENDMETHOD.
+
+  METHOD as_string2.
+    TRY.
+        cut = NEW #( i_weight = 15
+                     i_uom    = NEW #( 'kg' ) ).
+        cl_abap_unit_assert=>assert_equals( exp = '0,015'
+                                            act = cut->as_string( i_uom = NEW #( 'to' )  ) ).
+      CATCH zcx_value_object.
+        cl_abap_unit_assert=>fail( ).
+    ENDTRY.
+  ENDMETHOD.
+
+  METHOD as_string3.
+    TRY.
+        cut = NEW #( i_weight = 15
+                     i_uom    = NEW #( 'kg' ) ).
+        cl_abap_unit_assert=>assert_equals( exp = '15 KG'
+                                            act = cut->as_string_with_uom( ) ).
+      CATCH zcx_value_object.
+        cl_abap_unit_assert=>fail( ).
+    ENDTRY.
+  ENDMETHOD.
+
+  METHOD as_string4.
+    TRY.
+        cut = NEW #( i_weight = 15
+                     i_uom    = NEW #( 'kg' ) ).
+        cl_abap_unit_assert=>assert_equals( exp = '0,015 TO'
+                                            act = cut->as_string_with_uom( i_uom = NEW #( 'to' ) ) ).
       CATCH zcx_value_object.
         cl_abap_unit_assert=>fail( ).
     ENDTRY.

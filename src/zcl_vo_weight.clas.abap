@@ -6,13 +6,13 @@ CLASS zcl_vo_weight DEFINITION PUBLIC INHERITING FROM zcl_value_object FINAL CRE
                 i_uom    TYPE REF TO zcl_vo_uom
       RAISING   zcx_value_object.
 
-    METHODS as_str_in
+    METHODS as_string
       IMPORTING i_return_empty_for_zero TYPE abap_bool         DEFAULT abap_true
                 i_uom                   TYPE REF TO zcl_vo_uom OPTIONAL
       RETURNING VALUE(r_result)         TYPE string
       RAISING   zcx_value_object.
 
-    METHODS as_str_with_uom_in
+    METHODS as_string_with_uom
       IMPORTING i_return_empty_for_zero TYPE abap_bool         DEFAULT abap_true
                 i_uom                   TYPE REF TO zcl_vo_uom OPTIONAL
       RETURNING VALUE(r_result)         TYPE string
@@ -26,12 +26,12 @@ CLASS zcl_vo_weight DEFINITION PUBLIC INHERITING FROM zcl_value_object FINAL CRE
       IMPORTING i_weight        TYPE REF TO zcl_vo_weight
       RETURNING VALUE(r_result) TYPE abap_bool.
 
-    METHODS get_weight_in
+    METHODS get_weight
       IMPORTING i_uom           TYPE REF TO zcl_vo_uom OPTIONAL
       RETURNING VALUE(r_result) TYPE decfloat34
       RAISING   zcx_value_object.
 
-    METHODS get_weight_in_rounded
+    METHODS get_weight_rounded
       IMPORTING i_uom           TYPE REF TO zcl_vo_uom OPTIONAL
                 i_decimals      TYPE i                 DEFAULT 3
       RETURNING VALUE(r_result) TYPE decfloat34
@@ -67,7 +67,7 @@ CLASS zcl_vo_weight IMPLEMENTATION.
     r_result = build_hash( ).
   ENDMETHOD.
 
-  METHOD get_weight_in.
+  METHOD get_weight.
     IF i_uom IS NOT BOUND OR uom->is_equal_to( i_uom ).
       r_result = weight.
       RETURN.
@@ -81,32 +81,38 @@ CLASS zcl_vo_weight IMPLEMENTATION.
       IMPORTING  output        = r_result
       EXCEPTIONS error_message = 98
                  OTHERS        = 99.
+    ASSERT sy-subrc = 0.
   ENDMETHOD.
 
-  METHOD get_weight_in_rounded.
+  METHOD get_weight_rounded.
     ASSERT i_decimals >= 0.
-    r_result = round( val = get_weight_in( i_uom = i_uom )
+    r_result = round( val = get_weight( i_uom = i_uom )
                       dec = i_decimals ).
   ENDMETHOD.
 
-  METHOD as_str_in.
-    r_result = conv_to_string( i_weight                = get_weight_in( i_uom )
+  METHOD as_string.
+    r_result = conv_to_string( i_weight                = get_weight( i_uom )
                                i_return_empty_for_zero = i_return_empty_for_zero ).
   ENDMETHOD.
 
   METHOD add.
     ASSERT i_weight IS BOUND.
     TRY.
-        r_result = NEW #( i_weight = weight + i_weight->get_weight_in( uom )
+        r_result = NEW #( i_weight = weight + i_weight->get_weight( uom )
                           i_uom    = uom ).
       CATCH zcx_value_object.
         RAISE SHORTDUMP NEW cx_sy_create_object_error( ).
     ENDTRY.
   ENDMETHOD.
 
-  METHOD as_str_with_uom_in.
-    r_result = |{ as_str_in( i_return_empty_for_zero = i_return_empty_for_zero
-                             i_uom                   = i_uom ) } { i_uom->get_out( ) }|.
+  METHOD as_string_with_uom.
+    IF i_uom IS BOUND.
+      DATA(l_uom) = i_uom.
+    ELSE.
+      l_uom = uom.
+    ENDIF.
+    r_result = |{ as_string( i_return_empty_for_zero = i_return_empty_for_zero
+                             i_uom                   = l_uom ) } { l_uom->get_out( ) }|.
   ENDMETHOD.
 
   METHOD constructor.
@@ -123,7 +129,7 @@ CLASS zcl_vo_weight IMPLEMENTATION.
   METHOD gt.
     ASSERT i_weight IS BOUND.
     TRY.
-        r_result = xsdbool( weight > i_weight->get_weight_in( uom ) ).
+        r_result = xsdbool( weight > i_weight->get_weight( uom ) ).
       CATCH zcx_value_object.
         RAISE SHORTDUMP NEW cx_sy_create_object_error( ).
     ENDTRY.
