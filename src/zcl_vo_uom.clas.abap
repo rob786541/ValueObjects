@@ -20,10 +20,6 @@ CLASS zcl_vo_uom DEFINITION PUBLIC INHERITING FROM zcl_value_object CREATE PUBLI
       IMPORTING i_msehi TYPE msehi
       RAISING   zcx_value_object.
 
-    methods is_mass_dimension
-      returning value(r_result) type abap_bool.
-
-
   PROTECTED SECTION.
     METHODS create_hash REDEFINITION.
     METHODS is_valid    REDEFINITION.
@@ -119,9 +115,4 @@ CLASS zcl_vo_uom IMPLEMENTATION.
   METHOD is_valid.
     SELECT SINGLE @abap_true FROM t006 WHERE msehi = @in INTO @r_result.
   ENDMETHOD.
-
-  METHOD is_mass_dimension.
-    SELECT SINGLE @abap_true FROM t006 WHERE msehi = @in and dimid EQ 'MASS' INTO @r_result.
-  ENDMETHOD.
-
 ENDCLASS.

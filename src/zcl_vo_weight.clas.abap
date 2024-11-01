@@ -152,7 +152,7 @@ CLASS zcl_vo_weight IMPLEMENTATION.
   ENDMETHOD.
 
   METHOD check_uom_is_mass_dimension.
-    IF NOT i_uom->is_mass_dimension( ).
+    IF NOT is_dimension( i_dimid = 'MASS' i_msehi = i_uom->get_in( ) ).
       RAISE EXCEPTION TYPE zcx_value_object MESSAGE e004(z_value_object) WITH CONV string( i_uom->get_out( ) ).
     ENDIF.
   ENDMETHOD.

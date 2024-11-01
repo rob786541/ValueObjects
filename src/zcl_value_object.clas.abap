@@ -3,6 +3,9 @@ CLASS zcl_value_object DEFINITION PUBLIC ABSTRACT CREATE PUBLIC.
 
   PUBLIC SECTION.
     "! Compares two objects for value-based equality
+    "!
+    "! @parameter i_other |
+    "! @parameter r_result |
     METHODS is_equal_to
       IMPORTING i_other         TYPE REF TO zcl_value_object
       RETURNING VALUE(r_result) TYPE abap_bool.
@@ -12,6 +15,8 @@ CLASS zcl_value_object DEFINITION PUBLIC ABSTRACT CREATE PUBLIC.
     "! ensure that for each value relevant to the equality comparison, you call ADD_TO_HASH. After all values
     "! have been added, finalize the process by calling BUILD_HASH to construct the final hash value  and return
     "! the resulting hash value.
+    "!
+    "! @parameter r_result |
     METHODS create_hash ABSTRACT
       RETURNING VALUE(r_result) TYPE string.
 
@@ -24,6 +29,11 @@ CLASS zcl_value_object DEFINITION PUBLIC ABSTRACT CREATE PUBLIC.
     METHODS is_valid ABSTRACT
       RETURNING VALUE(r_result) TYPE abap_bool.
 
+    METHODS is_dimension
+      IMPORTING i_dimid         TYPE dimid
+                i_msehi         TYPE msehi
+      RETURNING VALUE(r_result) TYPE abap_bool.
+
   PRIVATE SECTION.
     DATA hash_generator TYPE REF TO cl_abap_message_digest.
 
@@ -31,6 +41,11 @@ ENDCLASS.
 
 
 CLASS zcl_value_object IMPLEMENTATION.
+  METHOD is_dimension.
+    ASSERT i_dimid IS NOT INITIAL.
+    SELECT SINGLE @abap_true FROM t006 WHERE msehi = @i_msehi AND dimid = @i_dimid INTO @r_result.
+  ENDMETHOD.
+
   METHOD is_equal_to.
     r_result = xsdbool( create_hash( ) = i_other->create_hash( ) ).
   ENDMETHOD.
