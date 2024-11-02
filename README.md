@@ -9,6 +9,6 @@ This repository provides a collection of value objects, including:
 * [Money](src/zcl_vo_money.clas.abap)
 * ...
 
-The [abstract superclass](src/zcl_value_object.clas.abap) provides core functionality for all value objects and defines a common interface.
+The [abstract superclass](src/zcl_value_object.clas.abap) provides core functionality for all value objects and defines a common interface. All use the same error class [zcx_value_object](src/zcx_value_object.clas.abap).
 
 ABAP Version: 757 SP4 or higher.
