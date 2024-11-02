@@ -9,7 +9,7 @@ CLASS zcl_vo_currency DEFINITION PUBLIC INHERITING FROM zcl_value_object CREATE 
       IMPORTING i_waers TYPE waers_curc
       RAISING   zcx_value_object.
 
-    METHODS as_string REDEFINITION.
+    METHODS to_string REDEFINITION.
 
   PROTECTED SECTION.
     METHODS create_hash REDEFINITION.
@@ -49,7 +49,7 @@ CLASS zcl_vo_currency IMPLEMENTATION.
       INTO @r_result.
   ENDMETHOD.
 
-  METHOD as_string.
+  METHOD to_string.
     r_result = currency.
   ENDMETHOD.
 ENDCLASS.

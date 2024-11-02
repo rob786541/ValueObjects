@@ -18,7 +18,7 @@ CLASS zcl_vo_date DEFINITION PUBLIC INHERITING FROM zcl_value_object CREATE PUBL
       IMPORTING i_time_zone     TYPE tznzone
       RETURNING VALUE(r_result) TYPE REF TO zcl_vo_date.
 
-    METHODS as_string REDEFINITION.
+    METHODS to_string REDEFINITION.
 
   PROTECTED SECTION.
     METHODS create_hash REDEFINITION.
@@ -73,7 +73,7 @@ CLASS zcl_vo_date IMPLEMENTATION.
     ENDTRY.
   ENDMETHOD.
 
-  METHOD as_string.
+  METHOD to_string.
     TRY.
         cl_abap_datfm=>conv_date_int_to_ext( EXPORTING im_datint = date
                                              IMPORTING ex_datext = r_result ).

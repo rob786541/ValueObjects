@@ -11,9 +11,9 @@ CLASS ltcl_money DEFINITION FINAL
     METHODS rounded1   FOR TESTING.
     METHODS rounded2   FOR TESTING.
     METHODS rounded3   FOR TESTING.
-    methods as_string1 for testing.
-    methods as_string2 for testing.
-    methods as_string3 for testing.
+    methods to_string1 for testing.
+    methods to_string2 for testing.
+    methods to_string3 for testing.
     METHODS add1       FOR TESTING.
     METHODS add2       FOR TESTING.
     METHODS equal1     FOR TESTING.
@@ -97,7 +97,7 @@ CLASS ltcl_money IMPLEMENTATION.
         DATA(other) = NEW zcl_vo_money( i_amount   = '0.82'
                                         i_currency = NEW #( 'eur' ) ).
         cl_abap_unit_assert=>assert_equals( exp = '13,036'
-                                            act = cut->add( other )->as_string( ) ).
+                                            act = cut->add( other )->to_string( ) ).
       CATCH zcx_value_object.
         cl_abap_unit_assert=>fail( ).
     ENDTRY.
@@ -153,34 +153,34 @@ CLASS ltcl_money IMPLEMENTATION.
     ENDTRY.
   ENDMETHOD.
 
-  METHOD as_string1.
+  METHOD to_string1.
     TRY.
         cut = NEW #( i_amount   = '1723.216'
                      i_currency = NEW #( 'EUR' ) ).
         cl_abap_unit_assert=>assert_equals( exp = '1.723,216 EUR'
-                                            act = cut->as_string_with_currency( ) ).
+                                            act = cut->to_string_with_currency( ) ).
       CATCH zcx_value_object.
         cl_abap_unit_assert=>fail( ).
     ENDTRY.
   ENDMETHOD.
 
-  METHOD as_string2.
+  METHOD to_string2.
     TRY.
         cut = NEW #( i_amount   = 0
                      i_currency = NEW #( 'EUR' ) ).
         cl_abap_unit_assert=>assert_equals( exp = '0'
-                                            act = cut->as_string( ) ).
+                                            act = cut->to_string( ) ).
       CATCH zcx_value_object.
         cl_abap_unit_assert=>fail( ).
     ENDTRY.
   ENDMETHOD.
 
-  METHOD as_string3.
+  METHOD to_string3.
     TRY.
         cut = NEW #( i_amount   = 0
                      i_currency = NEW #( 'EUR' ) ).
         cl_abap_unit_assert=>assert_equals( exp = ''
-                                            act = cut->as_string_empty_for_zero( ) ).
+                                            act = cut->to_string_empty_for_zero( ) ).
       CATCH zcx_value_object.
         cl_abap_unit_assert=>fail( ).
     ENDTRY.

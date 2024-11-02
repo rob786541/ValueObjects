@@ -30,7 +30,7 @@
      <SPRSL>E</SPRSL>
      <ARBGB>Z_VALUE_OBJECT</ARBGB>
      <MSGNR>004</MSGNR>
-     <TEXT>UOM &amp;1 is not a valid mass dimension</TEXT>
+     <TEXT>UOM &amp;1 is not a valid weight dimension</TEXT>
     </T100>
     <T100>
      <SPRSL>E</SPRSL>
@@ -55,6 +55,18 @@
      <ARBGB>Z_VALUE_OBJECT</ARBGB>
      <MSGNR>008</MSGNR>
      <TEXT>Currency &amp;1 is not equal to &amp;2</TEXT>
+    </T100>
+    <T100>
+     <SPRSL>E</SPRSL>
+     <ARBGB>Z_VALUE_OBJECT</ARBGB>
+     <MSGNR>009</MSGNR>
+     <TEXT>Length &amp;1 is not valid</TEXT>
+    </T100>
+    <T100>
+     <SPRSL>E</SPRSL>
+     <ARBGB>Z_VALUE_OBJECT</ARBGB>
+     <MSGNR>010</MSGNR>
+     <TEXT>Weight &amp;1 is not valid</TEXT>
     </T100>
    </T100>
   </asx:values>

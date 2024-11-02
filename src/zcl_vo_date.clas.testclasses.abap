@@ -16,8 +16,8 @@ CLASS ltc_unit_test DEFINITION FOR TESTING RISK LEVEL HARMLESS DURATION SHORT.
     METHODS equals1           FOR TESTING.
     METHODS equals2           FOR TESTING.
     METHODS equals3           FOR TESTING.
-    METHODS as_string1        FOR TESTING.
-    METHODS as_string2        FOR TESTING.
+    METHODS to_string1        FOR TESTING.
+    METHODS to_string2        FOR TESTING.
     METHODS time_zone1        FOR TESTING.
     METHODS time_zone2        FOR TESTING.
 
@@ -170,13 +170,13 @@ CLASS ltc_unit_test IMPLEMENTATION.
     ENDTRY.
   ENDMETHOD.
 
-  METHOD as_string1.
+  METHOD to_string1.
     " Arrange
     TRY.
         cut = NEW #( i_date = '20200504'
                      i_time = '111235' ).
         " Act
-        FINAL(date_string) = cut->as_string( ).
+        FINAL(date_string) = cut->to_string( ).
         " Assert
         cl_abap_unit_assert=>assert_equals( exp = '04.05.2020 11:12:35'
                                             act = date_string ).
@@ -185,12 +185,12 @@ CLASS ltc_unit_test IMPLEMENTATION.
     ENDTRY.
   ENDMETHOD.
 
-  METHOD as_string2.
+  METHOD to_string2.
     TRY.
         cut = NEW #( i_date = '20200504'
                      i_time = '000000' ).
         " Act
-        FINAL(date_string) = cut->as_string( ).
+        FINAL(date_string) = cut->to_string( ).
         " Assert
         cl_abap_unit_assert=>assert_equals( exp = '04.05.2020 00:00:00'
                                             act = date_string ).
@@ -206,11 +206,11 @@ CLASS ltc_unit_test IMPLEMENTATION.
                      i_time      = '111235'
                      i_time_zone = cl_abap_context_info=>get_user_time_zone( ) ).
         " Act
-        FINAL(date_string) = cut->as_string( ).
+        FINAL(date_string) = cut->to_string( ).
         " Assert
         cl_abap_unit_assert=>assert_equals( exp = '04.05.2020 11:12:35'
                                             act = date_string ).
-      CATCH zcx_value_object.
+      CATCH zcx_value_object cx_abap_context_info_error.
         cl_abap_unit_assert=>fail( ).
     ENDTRY.
   ENDMETHOD.
@@ -223,7 +223,7 @@ CLASS ltc_unit_test IMPLEMENTATION.
                      i_time_zone = 'UTC' ).
         " Act
         FINAL(user_time) = cut->convert_to_time_zone( 'UTC+1' ).
-        FINAL(date_string) = user_time->as_string( ).
+        FINAL(date_string) = user_time->to_string( ).
         " Assert
         cl_abap_unit_assert=>assert_equals( exp = '04.05.2020 12:12:35'
                                             act = date_string ).

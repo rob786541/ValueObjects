@@ -7,7 +7,7 @@ CLASS zcl_value_object DEFINITION PUBLIC ABSTRACT CREATE PUBLIC.
       IMPORTING i_other         TYPE REF TO zcl_value_object
       RETURNING VALUE(r_result) TYPE abap_bool.
 
-    METHODS as_string ABSTRACT
+    METHODS to_string ABSTRACT
       RETURNING VALUE(r_result) TYPE string.
 
   PROTECTED SECTION.

@@ -6,12 +6,12 @@ CLASS zcl_vo_money DEFINITION PUBLIC INHERITING FROM zcl_value_object FINAL CREA
                 i_currency TYPE REF TO zcl_vo_currency
       RAISING   zcx_value_object.
 
-    METHODS as_string REDEFINITION.
+    METHODS to_string REDEFINITION.
 
-    METHODS as_string_with_currency
+    METHODS to_string_with_currency
       RETURNING VALUE(r_result) TYPE string.
 
-    METHODS as_string_empty_for_zero
+    METHODS to_string_empty_for_zero
       RETURNING VALUE(r_result) TYPE string.
 
     METHODS add
@@ -86,21 +86,21 @@ CLASS zcl_vo_money IMPLEMENTATION.
 
   METHOD check_currency_is_equal.
     IF NOT currency->is_equal( i_currency ).
-      RAISE EXCEPTION TYPE zcx_value_object MESSAGE e008(z_value_object) WITH i_currency->as_string( ) currency->as_string( ).
+      RAISE EXCEPTION TYPE zcx_value_object MESSAGE e008(z_value_object) WITH i_currency->to_string( ) currency->to_string( ).
     ENDIF.
   ENDMETHOD.
 
-  METHOD as_string.
+  METHOD to_string.
     r_result = conv_to_string( amount ).
   ENDMETHOD.
 
-  METHOD as_string_empty_for_zero.
+  METHOD to_string_empty_for_zero.
     r_result = conv_to_string( i_value                 = amount
                                i_return_empty_for_zero = abap_true ).
   ENDMETHOD.
 
-  METHOD as_string_with_currency.
-    r_result = |{ conv_to_string( amount ) } { currency->as_string( ) }|.
+  METHOD to_string_with_currency.
+    r_result = |{ conv_to_string( amount ) } { currency->to_string( ) }|.
   ENDMETHOD.
 
   METHOD create_hash.

@@ -9,7 +9,7 @@ CLASS ltcl_currency DEFINITION FINAL
     METHODS enter_lower        FOR TESTING.
     METHODS enter_non_existing FOR TESTING.
     METHODS enter_empty        FOR TESTING.
-    METHODS as_string          FOR TESTING.
+    METHODS to_string          FOR TESTING.
 
 ENDCLASS.
 
@@ -55,11 +55,11 @@ CLASS ltcl_currency IMPLEMENTATION.
     ENDTRY.
   ENDMETHOD.
 
-  METHOD as_string.
+  METHOD to_string.
     TRY.
         cut = NEW #( 'usd' ).
         cl_abap_unit_assert=>assert_equals( exp = 'USD'
-                                            act = cut->as_string( ) ).
+                                            act = cut->to_string( ) ).
       CATCH zcx_value_object.
         cl_abap_unit_assert=>fail( ).
     ENDTRY.

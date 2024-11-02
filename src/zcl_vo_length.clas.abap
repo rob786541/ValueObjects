@@ -6,14 +6,14 @@ CLASS zcl_vo_length DEFINITION PUBLIC INHERITING FROM zcl_value_object FINAL CRE
                 i_uom    TYPE REF TO zcl_vo_uom
       RAISING   zcx_value_object.
 
-    METHODS as_string REDEFINITION.
+    METHODS to_string REDEFINITION.
 
-    METHODS as_string_with_uom
+    METHODS to_string_with_uom
       IMPORTING i_uom           TYPE REF TO zcl_vo_uom OPTIONAL
       RETURNING VALUE(r_result) TYPE string
       RAISING   zcx_value_object.
 
-    METHODS as_string_empty_for_zero
+    METHODS to_string_empty_for_zero
       IMPORTING i_uom           TYPE REF TO zcl_vo_uom OPTIONAL
       RETURNING VALUE(r_result) TYPE string
       RAISING   zcx_value_object.
@@ -29,6 +29,7 @@ CLASS zcl_vo_length DEFINITION PUBLIC INHERITING FROM zcl_value_object FINAL CRE
 
     METHODS get_length_rounded
       IMPORTING i_uom           TYPE REF TO zcl_vo_uom OPTIONAL
+                i_precision     TYPE i                 DEFAULT 0
                 i_decimals      TYPE i                 DEFAULT 3
       RETURNING VALUE(r_result) TYPE decfloat34
       RAISING   zcx_value_object.
@@ -53,6 +54,9 @@ CLASS zcl_vo_length IMPLEMENTATION.
     uom = i_uom.
     length = i_length.
     check_uom_is_length_dimension( i_uom ).
+    IF NOT is_valid( ).
+      RAISE EXCEPTION TYPE zcx_value_object MESSAGE e009(z_value_object) WITH to_string( ).
+    ENDIF.
   ENDMETHOD.
 
   METHOD create_hash.
@@ -66,13 +70,13 @@ CLASS zcl_vo_length IMPLEMENTATION.
   ENDMETHOD.
 
   METHOD is_valid.
-    r_result = abap_true.
+    r_result = xsdbool( length >= 0 ).
   ENDMETHOD.
 
   METHOD check_uom_is_length_dimension.
     IF NOT is_dimension( i_dimid = 'LENGTH'
                          i_msehi = i_uom->get_in( ) ).
-      RAISE EXCEPTION TYPE zcx_value_object MESSAGE e005(z_value_object) WITH CONV string( i_uom->get_out( ) ).
+      RAISE EXCEPTION TYPE zcx_value_object MESSAGE e005(z_value_object) WITH i_uom->to_string( ).
     ENDIF.
   ENDMETHOD.
 
@@ -94,12 +98,17 @@ CLASS zcl_vo_length IMPLEMENTATION.
   ENDMETHOD.
 
   METHOD get_length_rounded.
-    ASSERT i_decimals >= 0.
-    r_result = round( val = get_length( i_uom = i_uom )
-                      dec = i_decimals ).
+    ASSERT i_decimals >= 0 AND i_precision >= 0.
+    IF i_precision > 0.
+      r_result = round( val  = get_length( i_uom = i_uom )
+                        prec = i_precision ).
+    ELSE.
+      r_result = round( val = get_length( i_uom = i_uom )
+                        dec = i_decimals ).
+    ENDIF.
   ENDMETHOD.
 
-  METHOD as_string.
+  METHOD to_string.
     r_result = conv_to_string( length ).
   ENDMETHOD.
 
@@ -113,13 +122,13 @@ CLASS zcl_vo_length IMPLEMENTATION.
     ENDTRY.
   ENDMETHOD.
 
-  METHOD as_string_empty_for_zero.
+  METHOD to_string_empty_for_zero.
     DATA(l_uom) = COND #( WHEN i_uom IS BOUND THEN i_uom ELSE uom ).
     r_result = conv_to_string( i_return_empty_for_zero = abap_true
                                i_value                 = get_length( l_uom ) ).
   ENDMETHOD.
 
-  METHOD as_string_with_uom.
+  METHOD to_string_with_uom.
     DATA(l_uom) = COND #( WHEN i_uom IS BOUND THEN i_uom ELSE uom ).
     r_result = |{ conv_to_string( get_length( l_uom ) ) } { l_uom->get_out( ) }|.
   ENDMETHOD.

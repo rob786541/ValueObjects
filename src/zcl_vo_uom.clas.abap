@@ -20,7 +20,7 @@ CLASS zcl_vo_uom DEFINITION PUBLIC INHERITING FROM zcl_value_object CREATE PUBLI
       IMPORTING i_msehi TYPE msehi
       RAISING   zcx_value_object.
 
-    METHODS as_string REDEFINITION.
+    METHODS to_string REDEFINITION.
 
   PROTECTED SECTION.
     METHODS create_hash REDEFINITION.
@@ -118,7 +118,7 @@ CLASS zcl_vo_uom IMPLEMENTATION.
     SELECT SINGLE @abap_true FROM t006 WHERE msehi = @in INTO @r_result.
   ENDMETHOD.
 
-  METHOD as_string.
+  METHOD to_string.
     r_result = out.
   ENDMETHOD.
 ENDCLASS.
