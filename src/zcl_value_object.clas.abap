@@ -6,9 +6,12 @@ CLASS zcl_value_object DEFINITION PUBLIC ABSTRACT CREATE PUBLIC.
     "!
     "! @parameter i_other |
     "! @parameter r_result |
-    METHODS is_equal_to
+    METHODS is_equal
       IMPORTING i_other         TYPE REF TO zcl_value_object
       RETURNING VALUE(r_result) TYPE abap_bool.
+
+    METHODS as_string ABSTRACT
+      RETURNING VALUE(r_result) TYPE string.
 
   PROTECTED SECTION.
     "! Abstract method to create a hash representing the object's state. When redefining this method,
@@ -34,6 +37,11 @@ CLASS zcl_value_object DEFINITION PUBLIC ABSTRACT CREATE PUBLIC.
                 i_msehi         TYPE msehi
       RETURNING VALUE(r_result) TYPE abap_bool.
 
+    METHODS conv_to_string
+      IMPORTING i_return_empty_for_zero TYPE abap_bool DEFAULT abap_false
+                i_value                 TYPE decfloat34
+      RETURNING VALUE(r_result)         TYPE string.
+
   PRIVATE SECTION.
     DATA hash_generator TYPE REF TO cl_abap_message_digest.
 
@@ -41,12 +49,24 @@ ENDCLASS.
 
 
 CLASS zcl_value_object IMPLEMENTATION.
+  METHOD conv_to_string.
+    IF i_value = 0 AND i_return_empty_for_zero = abap_true.
+      RETURN.
+    ENDIF.
+    IF i_value = round( val = i_value
+                        dec = 0 ).
+      r_result = |{ i_value DECIMALS = 0 NUMBER = USER }|. " display decimals only when necessary
+    ELSE.
+      r_result = |{ i_value NUMBER = USER }|.
+    ENDIF.
+  ENDMETHOD.
+
   METHOD is_dimension.
     ASSERT i_dimid IS NOT INITIAL.
     SELECT SINGLE @abap_true FROM t006 WHERE msehi = @i_msehi AND dimid = @i_dimid INTO @r_result.
   ENDMETHOD.
 
-  METHOD is_equal_to.
+  METHOD is_equal.
     r_result = xsdbool( create_hash( ) = i_other->create_hash( ) ).
   ENDMETHOD.
 
