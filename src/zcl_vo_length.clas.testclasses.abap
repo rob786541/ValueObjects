@@ -1,19 +1,19 @@
-CLASS ltcl_length DEFINITION FINAL
+CLASS ltcl_weight DEFINITION FINAL
   FOR TESTING RISK LEVEL HARMLESS DURATION SHORT.
 
   PRIVATE SECTION.
-    DATA cut TYPE REF TO zcl_vo_length.
+    DATA cut TYPE REF TO zcl_vo_weight.
     DATA e   TYPE REF TO zcx_value_object.
 
-    METHODS get_length1 FOR TESTING.
-    METHODS get_length2 FOR TESTING.
+    METHODS get_weight1 FOR TESTING.
+    METHODS get_weight2 FOR TESTING.
     METHODS wrong_uom   FOR TESTING.
-    METHODS get_length4 FOR TESTING.
-    METHODS get_length5 FOR TESTING.
-    METHODS get_length6 FOR TESTING.
-    METHODS get_length7 FOR TESTING.
-    METHODS get_length8 FOR TESTING.
-    METHODS get_length9 FOR TESTING.
+    METHODS get_weight4 FOR TESTING.
+    METHODS get_weight5 FOR TESTING.
+    METHODS get_weight6 FOR TESTING.
+    METHODS get_weight7 FOR TESTING.
+    METHODS get_weight8 FOR TESTING.
+    METHODS get_weight9 FOR TESTING.
     METHODS rounded1    FOR TESTING.
     METHODS rounded2    FOR TESTING.
     METHODS rounded3    FOR TESTING.
@@ -34,24 +34,24 @@ CLASS ltcl_length DEFINITION FINAL
 ENDCLASS.
 
 
-CLASS ltcl_length IMPLEMENTATION.
-  METHOD get_length1.
+CLASS ltcl_weight IMPLEMENTATION.
+  METHOD get_weight1.
     TRY.
-        cut = NEW #( i_length = 15
+        cut = NEW #( i_weight = 15
                      i_uom    = NEW #( 'M' ) ).
         cl_abap_unit_assert=>assert_equals( exp = '15'
-                                            act = cut->get_length( ) ).
+                                            act = cut->get_weight( ) ).
       CATCH zcx_value_object.
         cl_abap_unit_assert=>fail( ).
     ENDTRY.
   ENDMETHOD.
 
-  METHOD get_length2.
+  METHOD get_weight2.
     TRY.
-        cut = NEW #( i_length = 15
+        cut = NEW #( i_weight = 15
                      i_uom    = NEW #( 'm' ) ).
         cl_abap_unit_assert=>assert_equals( exp = '15000'
-                                            act = cut->get_length( NEW #( 'mm' ) ) ).
+                                            act = cut->get_weight( NEW #( 'mm' ) ) ).
       CATCH zcx_value_object.
         cl_abap_unit_assert=>fail( ).
     ENDTRY.
@@ -59,76 +59,76 @@ CLASS ltcl_length IMPLEMENTATION.
 
   METHOD wrong_uom.
     TRY.
-        cut = NEW #( i_length = '12'
+        cut = NEW #( i_weight = '12'
                      i_uom    = NEW #( 'kg' ) ).
         cl_abap_unit_assert=>fail( ).
       CATCH zcx_value_object INTO e.
-        cl_abap_unit_assert=>assert_equals( exp = 'UOM KG is not a valid length dimension'
+        cl_abap_unit_assert=>assert_equals( exp = 'UOM KG is not a valid weight dimension'
                                             act = e->get_text( ) ).
     ENDTRY.
   ENDMETHOD.
 
-  METHOD get_length4.
+  METHOD get_weight4.
     TRY.
-        cut = NEW #( i_length = 15
+        cut = NEW #( i_weight = 15
                      i_uom    = NEW #( 'cm' ) ).
         cl_abap_unit_assert=>assert_equals( exp = '0.15'
-                                            act = cut->get_length( NEW #( 'm' ) ) ).
+                                            act = cut->get_weight( NEW #( 'm' ) ) ).
       CATCH zcx_value_object.
         cl_abap_unit_assert=>fail( ).
     ENDTRY.
   ENDMETHOD.
 
-  METHOD get_length5.
+  METHOD get_weight5.
     TRY.
-        cut = NEW #( i_length = '152324123456.321654'
+        cut = NEW #( i_weight = '152324123456.321654'
                      i_uom    = NEW #( 'km' ) ).
         cl_abap_unit_assert=>assert_equals( exp = '152324123456321654000'
-                                            act = cut->get_length( NEW #( 'MIM' ) ) ).
+                                            act = cut->get_weight( NEW #( 'MIM' ) ) ).
       CATCH zcx_value_object.
         cl_abap_unit_assert=>fail( ).
     ENDTRY.
   ENDMETHOD.
 
-  METHOD get_length6.
+  METHOD get_weight6.
     TRY.
-        cut = NEW #( i_length = '0.0000000123456'
+        cut = NEW #( i_weight = '0.0000000123456'
                      i_uom    = NEW #( 'mim' ) ).
         cl_abap_unit_assert=>assert_equals( exp = '0.0000000000000000123456'
-                                            act = cut->get_length( NEW #( 'km' ) ) ).
+                                            act = cut->get_weight( NEW #( 'km' ) ) ).
       CATCH zcx_value_object.
         cl_abap_unit_assert=>fail( ).
     ENDTRY.
   ENDMETHOD.
 
-  METHOD get_length7.
+  METHOD get_weight7.
     TRY.
-        cut = NEW #( i_length = 15
+        cut = NEW #( i_weight = 15
                      i_uom    = NEW #( 'm' ) ).
         cl_abap_unit_assert=>assert_equals( exp = '590.5511811023622047244094488188976'
-                                            act = cut->get_length( NEW #( 'in' ) ) ).
+                                            act = cut->get_weight( NEW #( 'in' ) ) ).
       CATCH zcx_value_object.
         cl_abap_unit_assert=>fail( ).
     ENDTRY.
   ENDMETHOD.
 
-  METHOD get_length8.
+  METHOD get_weight8.
     TRY.
-        cut = NEW #( i_length = 15
+        cut = NEW #( i_weight = 15
                      i_uom    = NEW #( 'cm' ) ).
         cl_abap_unit_assert=>assert_equals( exp = '0.00009320567883560009544261512765449773'
-                                            act = cut->get_length( NEW #( 'mi' ) ) ).
+                                            act = cut->get_weight( NEW #( 'mi' ) ) ).
       CATCH zcx_value_object.
         cl_abap_unit_assert=>fail( ).
     ENDTRY.
   ENDMETHOD.
 
-  METHOD get_length9.
+  METHOD get_weight9.
     TRY.
-        cut = NEW #( i_length = '6.2'
+        cut = NEW #( i_weight = '6.2'
                      i_uom    = NEW #( 'ft' ) ).
         cl_abap_unit_assert=>assert_equals( exp = '188.976'
-                                            act = cut->get_length( NEW #( 'cm' ) ) ).
+                                            act = cut->get_weight( NEW #( 'cm' ) ) ).
       CATCH zcx_value_object.
         cl_abap_unit_assert=>fail( ).
     ENDTRY.
@@ -136,10 +136,10 @@ CLASS ltcl_length IMPLEMENTATION.
 
   METHOD rounded1.
     TRY.
-        cut = NEW #( i_length = '6.2'
+        cut = NEW #( i_weight = '6.2'
                      i_uom    = NEW #( 'ft' ) ).
         cl_abap_unit_assert=>assert_equals( exp = '189'
-                                            act = cut->get_length_rounded( i_uom      = NEW #( 'cm' )
+                                            act = cut->get_weight_rounded( i_uom      = NEW #( 'cm' )
                                                                            i_decimals = 0 ) ).
       CATCH zcx_value_object.
         cl_abap_unit_assert=>fail( ).
@@ -148,10 +148,10 @@ CLASS ltcl_length IMPLEMENTATION.
 
   METHOD rounded2.
     TRY.
-        cut = NEW #( i_length = 15
+        cut = NEW #( i_weight = 15
                      i_uom    = NEW #( 'm' ) ).
         cl_abap_unit_assert=>assert_equals( exp = '590.551'
-                                            act = cut->get_length_rounded( i_uom = NEW #( 'in' ) ) ).
+                                            act = cut->get_weight_rounded( i_uom = NEW #( 'in' ) ) ).
       CATCH zcx_value_object.
         cl_abap_unit_assert=>fail( ).
     ENDTRY.
@@ -159,10 +159,10 @@ CLASS ltcl_length IMPLEMENTATION.
 
   METHOD rounded3.
     TRY.
-        cut = NEW #( i_length = 15
+        cut = NEW #( i_weight = 15
                      i_uom    = NEW #( 'cm' ) ).
         cl_abap_unit_assert=>assert_equals( exp = '0.00009320567883560009544261512765449773'
-                                            act = cut->get_length_rounded( i_uom      = NEW #( 'mi' )
+                                            act = cut->get_weight_rounded( i_uom      = NEW #( 'mi' )
                                                                            i_decimals = 60 ) ).
       CATCH zcx_value_object.
         cl_abap_unit_assert=>fail( ).
@@ -171,13 +171,13 @@ CLASS ltcl_length IMPLEMENTATION.
 
   METHOD add1.
     TRY.
-        cut = NEW #( i_length = 15
+        cut = NEW #( i_weight = 15
                      i_uom    = NEW #( 'm' ) ).
-        DATA(to_add) = NEW zcl_vo_length( i_length = 15
+        DATA(to_add) = NEW zcl_vo_weight( i_weight = 15
                                           i_uom    = NEW #( 'm' ) ).
         cut = cut->add( to_add ).
         cl_abap_unit_assert=>assert_equals( exp = '30'
-                                            act = cut->get_length( i_uom = NEW #( 'M' ) ) ).
+                                            act = cut->get_weight( i_uom = NEW #( 'M' ) ) ).
       CATCH zcx_value_object.
         cl_abap_unit_assert=>fail( ).
     ENDTRY.
@@ -185,13 +185,13 @@ CLASS ltcl_length IMPLEMENTATION.
 
   METHOD add2.
     TRY.
-        cut = NEW #( i_length = 15
+        cut = NEW #( i_weight = 15
                      i_uom    = NEW #( 'mm' ) ).
-        DATA(to_add) = NEW zcl_vo_length( i_length = 15
+        DATA(to_add) = NEW zcl_vo_weight( i_weight = 15
                                           i_uom    = NEW #( 'm' ) ).
         cut = cut->add( to_add ).
         cl_abap_unit_assert=>assert_equals( exp = '0.015015'
-                                            act = cut->get_length( i_uom = NEW #( 'km' ) ) ).
+                                            act = cut->get_weight( i_uom = NEW #( 'km' ) ) ).
       CATCH zcx_value_object.
         cl_abap_unit_assert=>fail( ).
     ENDTRY.
@@ -199,13 +199,13 @@ CLASS ltcl_length IMPLEMENTATION.
 
   METHOD add3.
     TRY.
-        cut = NEW #( i_length = 15
+        cut = NEW #( i_weight = 15
                      i_uom    = NEW #( 'mm' ) ).
-        DATA(to_add) = NEW zcl_vo_length( i_length = 0
+        DATA(to_add) = NEW zcl_vo_weight( i_weight = 0
                                           i_uom    = NEW #( 'm' ) ).
         cut = cut->add( to_add ).
         cl_abap_unit_assert=>assert_equals( exp = '0.000015'
-                                            act = cut->get_length( i_uom = NEW #( 'km' ) ) ).
+                                            act = cut->get_weight( i_uom = NEW #( 'km' ) ) ).
       CATCH zcx_value_object.
         cl_abap_unit_assert=>fail( ).
     ENDTRY.
@@ -213,7 +213,7 @@ CLASS ltcl_length IMPLEMENTATION.
 
   METHOD as_string1.
     TRY.
-        cut = NEW #( i_length = 15
+        cut = NEW #( i_weight = 15
                      i_uom    = NEW #( 'm' ) ).
         cl_abap_unit_assert=>assert_equals( exp = '15'
                                             act = cut->as_string( ) ).
@@ -224,7 +224,7 @@ CLASS ltcl_length IMPLEMENTATION.
 
   METHOD as_string2.
     TRY.
-        cut = NEW #( i_length = 0
+        cut = NEW #( i_weight = 0
                      i_uom    = NEW #( 'km' ) ).
         cl_abap_unit_assert=>assert_equals( exp = '0'
                                             act = cut->as_string( ) ).
@@ -235,7 +235,7 @@ CLASS ltcl_length IMPLEMENTATION.
 
   METHOD as_string3.
     TRY.
-        cut = NEW #( i_length = 15
+        cut = NEW #( i_weight = 15
                      i_uom    = NEW #( 'km' ) ).
         cl_abap_unit_assert=>assert_equals( exp = '15 KM'
                                             act = cut->as_string_with_uom( ) ).
@@ -246,7 +246,7 @@ CLASS ltcl_length IMPLEMENTATION.
 
   METHOD as_string4.
     TRY.
-        cut = NEW #( i_length = 150
+        cut = NEW #( i_weight = 150
                      i_uom    = NEW #( 'cm' ) ).
         cl_abap_unit_assert=>assert_equals( exp = '1,5 M'
                                             act = cut->as_string_with_uom( i_uom = NEW #( 'm' ) ) ).
@@ -256,7 +256,7 @@ CLASS ltcl_length IMPLEMENTATION.
   ENDMETHOD.
   METHOD as_string5.
     TRY.
-        cut = NEW #( i_length = '0.00'
+        cut = NEW #( i_weight = '0.00'
                      i_uom    = NEW #( 'm' ) ).
         cl_abap_unit_assert=>assert_equals( exp = ''
                                             act = cut->as_string_empty_for_zero( i_uom = NEW #( 'km' ) ) ).
@@ -266,7 +266,7 @@ CLASS ltcl_length IMPLEMENTATION.
   ENDMETHOD.
   METHOD as_string6.
     TRY.
-        cut = NEW #( i_length = '0.00'
+        cut = NEW #( i_weight = '0.00'
                      i_uom    = NEW #( 'km' ) ).
         cl_abap_unit_assert=>assert_equals( exp = ''
                                             act = cut->as_string_empty_for_zero( ) ).
@@ -276,9 +276,9 @@ CLASS ltcl_length IMPLEMENTATION.
   ENDMETHOD.
   METHOD equal1.
     TRY.
-        cut = NEW #( i_length = 15
+        cut = NEW #( i_weight = 15
                      i_uom    = NEW #( 'km' ) ).
-        DATA(other) = NEW zcl_vo_length( i_length = 15
+        DATA(other) = NEW zcl_vo_weight( i_weight = 15
                                           i_uom    = NEW #( 'km' ) ).
         cl_abap_unit_assert=>assert_true( cut->is_equal( other ) ).
       CATCH zcx_value_object.
@@ -288,9 +288,9 @@ CLASS ltcl_length IMPLEMENTATION.
 
   METHOD equal2.
     TRY.
-        cut = NEW #( i_length = 15
+        cut = NEW #( i_weight = 15
                      i_uom    = NEW #( 'km' ) ).
-        DATA(other) = NEW zcl_vo_length( i_length = 15
+        DATA(other) = NEW zcl_vo_weight( i_weight = 15
                                           i_uom    = NEW #( 'm' ) ).
         cl_abap_unit_assert=>assert_false( cut->is_equal( other ) ).
       CATCH zcx_value_object.
@@ -300,9 +300,9 @@ CLASS ltcl_length IMPLEMENTATION.
 
   METHOD equal3.
     TRY.
-        cut = NEW #( i_length = 1
+        cut = NEW #( i_weight = 1
                      i_uom    = NEW #( 'm' ) ).
-        DATA(other) = NEW zcl_vo_length( i_length = 100
+        DATA(other) = NEW zcl_vo_weight( i_weight = 100
                                           i_uom    = NEW #( 'cm' ) ).
         cl_abap_unit_assert=>assert_true( cut->is_equal( other ) ).
       CATCH zcx_value_object.
@@ -312,9 +312,9 @@ CLASS ltcl_length IMPLEMENTATION.
 
   METHOD equal4.
     TRY.
-        cut = NEW #( i_length = 15
+        cut = NEW #( i_weight = 15
                      i_uom    = NEW #( 'cm' ) ).
-        DATA(other) = NEW zcl_vo_length( i_length = '0.00009320567883560009544261512765449773'
+        DATA(other) = NEW zcl_vo_weight( i_weight = '0.00009320567883560009544261512765449773'
                                           i_uom    = NEW #( 'mi' ) ).
         cl_abap_unit_assert=>assert_true( cut->is_equal( other ) ).
       CATCH zcx_value_object.
