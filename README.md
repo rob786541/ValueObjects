@@ -5,6 +5,8 @@ This repository provides a collection of value objects, including:
 * [Unit of measurement](src/zcl_vo_uom.clas.abap)
 * [Weight](src/zcl_vo_weight.clas.abap)
 * [Length](src/zcl_vo_length.clas.abap)
+* [Currency](zcl_vo_currency.clas.abap)
+* [Money](zcl_vo_money.clas.abap)
 * ...
 
 The [abstract superclass](src/zcl_value_object.clas.abap) provides core functionality for all value objects and defines a common interface.
