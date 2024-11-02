@@ -38,6 +38,24 @@
      <MSGNR>005</MSGNR>
      <TEXT>UOM &amp;1 is not a valid length dimension</TEXT>
     </T100>
+    <T100>
+     <SPRSL>E</SPRSL>
+     <ARBGB>Z_VALUE_OBJECT</ARBGB>
+     <MSGNR>006</MSGNR>
+     <TEXT>Empty currency is not allowed</TEXT>
+    </T100>
+    <T100>
+     <SPRSL>E</SPRSL>
+     <ARBGB>Z_VALUE_OBJECT</ARBGB>
+     <MSGNR>007</MSGNR>
+     <TEXT>Currency &amp;1 is not valid</TEXT>
+    </T100>
+    <T100>
+     <SPRSL>E</SPRSL>
+     <ARBGB>Z_VALUE_OBJECT</ARBGB>
+     <MSGNR>008</MSGNR>
+     <TEXT>Currency &amp;1 is not equal to &amp;2</TEXT>
+    </T100>
    </T100>
   </asx:values>
  </asx:abap>

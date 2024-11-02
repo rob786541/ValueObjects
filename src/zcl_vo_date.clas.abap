@@ -86,12 +86,13 @@ CLASS zcl_vo_date IMPLEMENTATION.
   ENDMETHOD.
 
   METHOD get_system_time_zone.
-    SELECT SINGLE tzonesys FROM ttzcu INTO r_result.
+    SELECT SINGLE tzonesys FROM ttzcu INTO @r_result.
     ASSERT sy-subrc = 0. " customizing missing
   ENDMETHOD.
 
   METHOD convert_to_time_zone.
     ASSERT i_time_zone IS NOT INITIAL.
+    " is there a way to do it with one convert?
     CONVERT DATE date TIME time
             INTO TIME STAMP FINAL(ts) TIME ZONE time_zone.
     ASSERT sy-subrc = 0.

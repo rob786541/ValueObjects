@@ -3,9 +3,6 @@ CLASS zcl_value_object DEFINITION PUBLIC ABSTRACT CREATE PUBLIC.
 
   PUBLIC SECTION.
     "! Compares two objects for value-based equality
-    "!
-    "! @parameter i_other |
-    "! @parameter r_result |
     METHODS is_equal
       IMPORTING i_other         TYPE REF TO zcl_value_object
       RETURNING VALUE(r_result) TYPE abap_bool.
@@ -17,9 +14,7 @@ CLASS zcl_value_object DEFINITION PUBLIC ABSTRACT CREATE PUBLIC.
     "! Abstract method to create a hash representing the object's state. When redefining this method,
     "! ensure that for each value relevant to the equality comparison, you call ADD_TO_HASH. After all values
     "! have been added, finalize the process by calling BUILD_HASH to construct the final hash value  and return
-    "! the resulting hash value.
-    "!
-    "! @parameter r_result |
+    "! the resulting hash value. Do not add an instance.
     METHODS create_hash ABSTRACT
       RETURNING VALUE(r_result) TYPE string.
 

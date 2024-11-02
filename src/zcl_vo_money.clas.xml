@@ -3,14 +3,13 @@
  <asx:abap xmlns:asx="http://www.sap.com/abapxml" version="1.0">
   <asx:values>
    <VSEOCLASS>
-    <CLSNAME>ZCL_VO_DATE</CLSNAME>
+    <CLSNAME>ZCL_VO_MONEY</CLSNAME>
     <LANGU>E</LANGU>
-    <DESCRIPT>Immutable value object representing date and time</DESCRIPT>
+    <DESCRIPT>Immutable value object representing money</DESCRIPT>
     <STATE>1</STATE>
     <CLSCCINCL>X</CLSCCINCL>
     <FIXPT>X</FIXPT>
     <UNICODE>X</UNICODE>
-    <RSTAT>K</RSTAT>
     <WITH_UNIT_TESTS>X</WITH_UNIT_TESTS>
    </VSEOCLASS>
   </asx:values>
