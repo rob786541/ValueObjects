@@ -69,7 +69,7 @@ CLASS zcl_vo_uom IMPLEMENTATION.
     IF i_msehi IS INITIAL.
       RAISE EXCEPTION TYPE zcx_value_object MESSAGE e002(z_value_object).
     ENDIF.
-    DATA(uom) = CONV msehi( to_upper( i_msehi ) ).
+    FINAL(uom) = CONV msehi( to_upper( i_msehi ) ).
     in = create_in( uom ).
     out = create_out( uom ).
     set_if_still_intitial( uom ).

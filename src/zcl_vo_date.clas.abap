@@ -82,7 +82,7 @@ CLASS zcl_vo_date IMPLEMENTATION.
                                              IMPORTING ex_datext = r_result ).
         cl_abap_timefm=>conv_time_int_to_ext( EXPORTING time_int = time
                                               IMPORTING time_ext = FINAL(l_time) ).
-        R_result = |{ r_result } { l_time }|.
+        r_result = |{ r_result } { l_time }|.
       CATCH cx_abap_datfm_format_unknown.
         RAISE SHORTDUMP NEW cx_sy_create_object_error( ).
     ENDTRY.

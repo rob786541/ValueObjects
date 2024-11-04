@@ -1,4 +1,4 @@
-CLASS zcl_vo_quantity DEFINITION PUBLIC INHERITING FROM zcl_value_object FINAL CREATE PUBLIC.
+CLASS zcl_vo_quantity DEFINITION PUBLIC INHERITING FROM zcl_value_object CREATE PUBLIC.
 
   PUBLIC SECTION.
     CLASS-METHODS class_constructor.
@@ -68,7 +68,7 @@ ENDCLASS.
 CLASS zcl_vo_quantity IMPLEMENTATION.
   METHOD create_hash.
     TRY.
-        DATA(si) = |{ get_quantity( NEW #( uom->get_si_unit( ) ) ) NUMBER = RAW }|.
+        FINAL(si) = |{ get_quantity( NEW #( uom->get_si_unit( ) ) ) NUMBER = RAW }|.
         add_to_hash( REF #( si ) ).
         r_result = build_hash( ).
       CATCH zcx_value_object.
@@ -108,7 +108,7 @@ CLASS zcl_vo_quantity IMPLEMENTATION.
   ENDMETHOD.
 
   METHOD to_string_with_uom.
-    DATA(l_uom) = COND #( WHEN i_uom IS BOUND THEN i_uom ELSE uom ).
+    FINAL(l_uom) = COND #( WHEN i_uom IS BOUND THEN i_uom ELSE uom ).
     r_result = |{ conv_to_string( get_quantity( l_uom ) ) } { l_uom->get_out( ) }|.
   ENDMETHOD.
 
@@ -140,7 +140,7 @@ CLASS zcl_vo_quantity IMPLEMENTATION.
   ENDMETHOD.
 
   METHOD to_string_empty_for_zero.
-    DATA(l_uom) = COND #( WHEN i_uom IS BOUND THEN i_uom ELSE uom ).
+    FINAL(l_uom) = COND #( WHEN i_uom IS BOUND THEN i_uom ELSE uom ).
     r_result = conv_to_string( i_return_empty_for_zero = abap_true
                                i_value                 = get_quantity( l_uom ) ).
   ENDMETHOD.

@@ -1,4 +1,4 @@
-CLASS zcl_vo_money DEFINITION PUBLIC INHERITING FROM zcl_value_object FINAL CREATE PUBLIC.
+CLASS zcl_vo_money DEFINITION PUBLIC INHERITING FROM zcl_value_object CREATE PUBLIC.
 
   PUBLIC SECTION.
     METHODS constructor
@@ -104,7 +104,7 @@ CLASS zcl_vo_money IMPLEMENTATION.
   ENDMETHOD.
 
   METHOD create_hash.
-    DATA(wears) = currency->get_currency( ).
+    FINAL(wears) = currency->get_currency( ).
     add_to_hash( REF #( wears ) ).
     add_to_hash( REF #( amount ) ).
     r_result = build_hash( ).
