@@ -27,11 +27,6 @@ CLASS zcl_value_object DEFINITION PUBLIC ABSTRACT CREATE PUBLIC.
     METHODS is_valid ABSTRACT
       RETURNING VALUE(r_result) TYPE abap_bool.
 
-    METHODS is_dimension
-      IMPORTING i_dimid         TYPE dimid
-                i_msehi         TYPE msehi
-      RETURNING VALUE(r_result) TYPE abap_bool.
-
     METHODS conv_to_string
       IMPORTING i_return_empty_for_zero TYPE abap_bool DEFAULT abap_false
                 i_value                 TYPE decfloat34
@@ -54,11 +49,6 @@ CLASS zcl_value_object IMPLEMENTATION.
     ELSE.
       r_result = |{ i_value NUMBER = USER }|.
     ENDIF.
-  ENDMETHOD.
-
-  METHOD is_dimension.
-    ASSERT i_dimid IS NOT INITIAL.
-    SELECT SINGLE @abap_true FROM t006 WHERE msehi = @i_msehi AND dimid = @i_dimid INTO @r_result.
   ENDMETHOD.
 
   METHOD is_equal.

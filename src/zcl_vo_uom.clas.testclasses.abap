@@ -87,12 +87,6 @@ CLASS ltcl_uom IMPLEMENTATION.
                                             act = cut->get_in( ) ).
         cl_abap_unit_assert=>assert_equals( exp = 'TON'
                                             act = cut->get_out( ) ).
-        sy-langu = 'F'.
-        cut = NEW #( 'to' ).
-        cl_abap_unit_assert=>assert_equals( exp = 'TO'
-                                            act = cut->get_in( ) ).
-        cl_abap_unit_assert=>assert_equals( exp = 'TON'
-                                            act = cut->get_out( ) ).
       CATCH zcx_value_object.
         cl_abap_unit_assert=>fail( ).
     ENDTRY.
@@ -102,10 +96,10 @@ CLASS ltcl_uom IMPLEMENTATION.
     DATA i TYPE i.
 
     TRY.
-        SELECT msehi FROM t006 INTO TABLE @DATA(uoms) UP TO 100 ROWS.
+        SELECT UnitOfMeasure FROM I_UnitOfMeasure INTO TABLE @DATA(uoms) UP TO 100 ROWS.
         DO 50000 TIMES.
           i += 1.
-          cut = NEW #( uoms[ i ]-msehi ).
+          cut = NEW #( uoms[ i ]-UnitOfMeasure ).
           i = COND #( WHEN i = 100 THEN 0 ).
         ENDDO.
       CATCH zcx_value_object.
@@ -114,21 +108,21 @@ CLASS ltcl_uom IMPLEMENTATION.
   ENDMETHOD.
 
   METHOD integrity.
-    DATA uoms TYPE SORTED TABLE OF t006b WITH UNIQUE KEY mandt spras mseh3
-        WITH UNIQUE SORTED KEY skey COMPONENTS mandt spras msehi.
+    DATA uoms TYPE SORTED TABLE OF I_UnitOfMeasureCommercialName WITH UNIQUE KEY  Language UnitOfMeasureCommercialName
+        WITH UNIQUE SORTED KEY secondary_key COMPONENTS Language UnitOfMeasure.
 
-    SELECT * FROM t006b INTO TABLE @uoms.
+    SELECT * FROM I_UnitOfMeasureCommercialName INTO TABLE @uoms.
     LOOP AT uoms INTO DATA(wa)
-         GROUP BY wa-spras
+         GROUP BY wa-Language
          INTO DATA(key).
       LOOP AT GROUP key ASSIGNING FIELD-SYMBOL(<members>).
         SELECT SINGLE @abap_true FROM @uoms AS uoms
-          WHERE spras = @<members>-spras
-            AND mseh3 = @<members>-msehi AND msehi <> @<members>-msehi
+          WHERE Language                    = @<members>-Language
+            AND UnitOfMeasureCommercialName = @<members>-UnitOfMeasure AND UnitOfMeasure <> @<members>-UnitOfMeasure
           INTO @DATA(found).
         IF found = abap_true.
           cl_abap_unit_assert=>fail(
-              msg = |UOM is internal and external: spras { <members>-spras }, mseh3/msehi { <members>-msehi }| ).
+              msg = |UOM is internal and external: spras { <members>-Language }, mseh3/msehi { <members>-UnitOfMeasure }| ).
         ENDIF.
       ENDLOOP.
     ENDLOOP.

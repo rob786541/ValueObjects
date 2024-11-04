@@ -29,18 +29,6 @@
     <T100>
      <SPRSL>E</SPRSL>
      <ARBGB>Z_VALUE_OBJECT</ARBGB>
-     <MSGNR>004</MSGNR>
-     <TEXT>UOM &amp;1 is not a valid weight dimension</TEXT>
-    </T100>
-    <T100>
-     <SPRSL>E</SPRSL>
-     <ARBGB>Z_VALUE_OBJECT</ARBGB>
-     <MSGNR>005</MSGNR>
-     <TEXT>UOM &amp;1 is not a valid length dimension</TEXT>
-    </T100>
-    <T100>
-     <SPRSL>E</SPRSL>
-     <ARBGB>Z_VALUE_OBJECT</ARBGB>
      <MSGNR>006</MSGNR>
      <TEXT>Empty currency is not allowed</TEXT>
     </T100>
@@ -59,14 +47,20 @@
     <T100>
      <SPRSL>E</SPRSL>
      <ARBGB>Z_VALUE_OBJECT</ARBGB>
-     <MSGNR>009</MSGNR>
-     <TEXT>Length &amp;1 is not valid</TEXT>
+     <MSGNR>011</MSGNR>
+     <TEXT>Dimensions of &amp;1 and &amp;2 are different</TEXT>
     </T100>
     <T100>
      <SPRSL>E</SPRSL>
      <ARBGB>Z_VALUE_OBJECT</ARBGB>
-     <MSGNR>010</MSGNR>
-     <TEXT>Weight &amp;1 is not valid</TEXT>
+     <MSGNR>012</MSGNR>
+     <TEXT>Dimension &amp;1 is not supported</TEXT>
+    </T100>
+    <T100>
+     <SPRSL>E</SPRSL>
+     <ARBGB>Z_VALUE_OBJECT</ARBGB>
+     <MSGNR>013</MSGNR>
+     <TEXT>Quantity &amp;1 is not valid</TEXT>
     </T100>
    </T100>
   </asx:values>

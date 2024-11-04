@@ -29,18 +29,21 @@ CLASS zcl_vo_date DEFINITION PUBLIC INHERITING FROM zcl_value_object CREATE PUBL
     DATA time      TYPE t.
     DATA time_zone TYPE tznzone.
 
-    METHODS get_system_time_zone
-      RETURNING VALUE(r_result) TYPE tznzone.
-
 ENDCLASS.
 
 
 CLASS zcl_vo_date IMPLEMENTATION.
   METHOD constructor.
     super->constructor( ).
-    date = COND #( WHEN i_date IS SUPPLIED THEN i_date ELSE cl_abap_context_info=>get_system_date( ) ).
-    time = COND #( WHEN i_time IS SUPPLIED THEN i_time ELSE cl_abap_context_info=>get_system_time( ) ).
-    time_zone = COND #( WHEN i_time_zone IS SUPPLIED THEN i_time_zone ELSE get_system_time_zone( ) ).
+    date = COND #( WHEN i_date IS SUPPLIED
+                   THEN i_date
+                   ELSE xco_cp=>sy->date( )->as( xco_cp_time=>format->abap )->value ).
+    time = COND #( WHEN i_time IS SUPPLIED
+                   THEN i_time
+                   ELSE xco_cp=>sy->time( )->as( xco_cp_time=>format->abap )->value ).
+    time_zone = COND #( WHEN i_time_zone IS SUPPLIED
+                        THEN i_time_zone
+                        ELSE xco_cp_time=>time_zone->user->value ).
     IF NOT is_valid( ).
       RAISE EXCEPTION TYPE zcx_value_object MESSAGE e001(z_value_object) WITH i_date i_time.
     ENDIF.
@@ -83,11 +86,6 @@ CLASS zcl_vo_date IMPLEMENTATION.
       CATCH cx_abap_datfm_format_unknown.
         RAISE SHORTDUMP NEW cx_sy_create_object_error( ).
     ENDTRY.
-  ENDMETHOD.
-
-  METHOD get_system_time_zone.
-    SELECT SINGLE tzonesys FROM ttzcu INTO @r_result.
-    ASSERT sy-subrc = 0. " customizing missing
   ENDMETHOD.
 
   METHOD convert_to_time_zone.

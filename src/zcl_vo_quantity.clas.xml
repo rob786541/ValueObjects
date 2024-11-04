@@ -3,13 +3,13 @@
  <asx:abap xmlns:asx="http://www.sap.com/abapxml" version="1.0">
   <asx:values>
    <VSEOCLASS>
-    <CLSNAME>ZCL_VO_LENGTH</CLSNAME>
+    <CLSNAME>ZCL_VO_QUANTITY</CLSNAME>
     <LANGU>E</LANGU>
-    <DESCRIPT>Immutable value object representing length</DESCRIPT>
+    <DESCRIPT>Immutable value object representing quantity</DESCRIPT>
     <STATE>1</STATE>
     <CLSCCINCL>X</CLSCCINCL>
     <FIXPT>X</FIXPT>
-    <UNICODE>X</UNICODE>
+    <UNICODE>5</UNICODE>
     <WITH_UNIT_TESTS>X</WITH_UNIT_TESTS>
    </VSEOCLASS>
   </asx:values>

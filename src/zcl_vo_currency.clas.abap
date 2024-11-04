@@ -43,10 +43,14 @@ CLASS zcl_vo_currency IMPLEMENTATION.
   ENDMETHOD.
 
   METHOD is_valid.
-    SELECT SINGLE @abap_true FROM tcurc
-      WHERE waers = @currency
-        AND ( gdatu = '00000000' OR gdatu >= @( cl_abap_context_info=>get_system_date( ) ) )
+    SELECT SINGLE @abap_true FROM I_Currency
+      WHERE Currency = @currency
       INTO @r_result.
+    " There is gdatu in the database but not in the CDS-View. Is this field deprecated?
+*    SELECT SINGLE @abap_true FROM tcurc
+*      WHERE waers = @currency
+*        AND ( gdatu = '00000000' OR gdatu >= @( cl_abap_context_info=>get_system_date( ) ) )
+*      INTO @r_result.
   ENDMETHOD.
 
   METHOD to_string.
