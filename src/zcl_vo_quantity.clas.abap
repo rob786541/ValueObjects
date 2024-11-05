@@ -59,7 +59,7 @@ CLASS zcl_vo_quantity DEFINITION PUBLIC INHERITING FROM zcl_value_object CREATE 
       IMPORTING i_uom TYPE REF TO zcl_vo_uom
       RAISING   zcx_value_object.
 
-    METHODS check_dimension_supported
+    METHODS check_is_dimension_supported
       RAISING zcx_value_object.
 
 ENDCLASS.
@@ -116,7 +116,7 @@ CLASS zcl_vo_quantity IMPLEMENTATION.
     super->constructor( ).
     uom = i_uom.
     quantity = i_quantity.
-    check_dimension_supported( ).
+    check_is_dimension_supported( ).
     IF NOT is_valid( ).
       RAISE EXCEPTION TYPE zcx_value_object MESSAGE e013(z_value_object) WITH to_string( ).
     ENDIF.
@@ -151,7 +151,7 @@ CLASS zcl_vo_quantity IMPLEMENTATION.
     ENDIF.
   ENDMETHOD.
 
-  METHOD check_dimension_supported.
+  METHOD check_is_dimension_supported.
     IF uom->get_si_unit( ) IS INITIAL.
       RAISE EXCEPTION TYPE zcx_value_object MESSAGE e012(z_value_object) WITH uom->get_dimension( ).
     ENDIF.

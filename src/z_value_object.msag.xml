@@ -18,13 +18,25 @@
      <SPRSL>E</SPRSL>
      <ARBGB>Z_VALUE_OBJECT</ARBGB>
      <MSGNR>002</MSGNR>
-     <TEXT>Empty UOM is not allowed</TEXT>
+     <TEXT>Empty UoM is not allowed</TEXT>
     </T100>
     <T100>
      <SPRSL>E</SPRSL>
      <ARBGB>Z_VALUE_OBJECT</ARBGB>
      <MSGNR>003</MSGNR>
-     <TEXT>UOM &amp;1 is not valid</TEXT>
+     <TEXT>UoM &amp;1 is not valid</TEXT>
+    </T100>
+    <T100>
+     <SPRSL>E</SPRSL>
+     <ARBGB>Z_VALUE_OBJECT</ARBGB>
+     <MSGNR>004</MSGNR>
+     <TEXT>UoM &amp;1 for material &amp;2 not valid</TEXT>
+    </T100>
+    <T100>
+     <SPRSL>E</SPRSL>
+     <ARBGB>Z_VALUE_OBJECT</ARBGB>
+     <MSGNR>005</MSGNR>
+     <TEXT>Material &amp;1 is not valid</TEXT>
     </T100>
     <T100>
      <SPRSL>E</SPRSL>
