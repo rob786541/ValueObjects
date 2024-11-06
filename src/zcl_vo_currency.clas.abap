@@ -2,6 +2,8 @@
 CLASS zcl_vo_currency DEFINITION PUBLIC INHERITING FROM zcl_value_object CREATE PUBLIC.
 
   PUBLIC SECTION.
+    CLASS-METHODS class_constructor.
+
     METHODS get_currency
       RETURNING VALUE(r_result) TYPE waers_curc.
 
@@ -16,6 +18,8 @@ CLASS zcl_vo_currency DEFINITION PUBLIC INHERITING FROM zcl_value_object CREATE 
     METHODS is_valid    REDEFINITION.
 
   PRIVATE SECTION.
+    CLASS-DATA currencies TYPE SORTED TABLE OF i_currency WITH UNIQUE KEY currency.
+
     DATA currency TYPE waers_curc.
 
 ENDCLASS.
@@ -43,17 +47,15 @@ CLASS zcl_vo_currency IMPLEMENTATION.
   ENDMETHOD.
 
   METHOD is_valid.
-    SELECT SINGLE @abap_true FROM I_Currency
-      WHERE Currency = @currency
-      INTO @r_result.
-    " There is gdatu in the database but not in the CDS-View. Is this field deprecated?
-*    SELECT SINGLE @abap_true FROM tcurc
-*      WHERE waers = @currency
-*        AND ( gdatu = '00000000' OR gdatu >= @( cl_abap_context_info=>get_system_date( ) ) )
-*      INTO @r_result.
+    r_result = xsdbool( line_exists( currencies[ Currency = currency ] ) ).
   ENDMETHOD.
 
   METHOD to_string.
     r_result = currency.
+  ENDMETHOD.
+
+  METHOD class_constructor.
+    " There is the field gdatu in the database tcurc but not in the CDS-View. Is this field deprecated?
+    SELECT Currency FROM I_Currency INTO TABLE @currencies.
   ENDMETHOD.
 ENDCLASS.
