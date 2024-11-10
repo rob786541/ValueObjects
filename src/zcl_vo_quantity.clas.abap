@@ -1,3 +1,4 @@
+"! Immutable value object representing quantity like weight, length, ...
 CLASS zcl_vo_quantity DEFINITION PUBLIC INHERITING FROM zcl_value_object CREATE PUBLIC.
 
   PUBLIC SECTION.

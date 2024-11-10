@@ -1,3 +1,4 @@
+"! Immutable value object representing money
 CLASS zcl_vo_money DEFINITION PUBLIC INHERITING FROM zcl_value_object CREATE PUBLIC.
 
   PUBLIC SECTION.

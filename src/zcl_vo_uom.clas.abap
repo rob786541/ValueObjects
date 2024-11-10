@@ -1,4 +1,4 @@
-"! immutable value object representing unit of measurement
+"! Immutable value object representing unit of measurement
 "! sap differentiates between internal and external uom (e.g. st and pc). zcl_vo_uom does not care what you put in,
 "! you only need to know what you want when you get it out.
 CLASS zcl_vo_uom DEFINITION PUBLIC INHERITING FROM zcl_value_object CREATE PUBLIC.
@@ -19,7 +19,7 @@ CLASS zcl_vo_uom DEFINITION PUBLIC INHERITING FROM zcl_value_object CREATE PUBLI
       RETURNING VALUE(r_result) TYPE mssie.
 
     "! the uom needs to be unique within a language. if there is an input, which uses the output of another one, it no longer works.
-    "! this is not the case in the sap standard. for this reason, no distinction is made
+    "! this is not the case in the sap standard configuration. for this reason, no distinction is made
     "! between in and out when instantiating. check unit test integrity to be sure, that your system is ok
     "!
     "! @parameter i_msehi          | internal or external unit of measurement

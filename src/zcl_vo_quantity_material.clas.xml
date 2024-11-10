@@ -5,7 +5,7 @@
    <VSEOCLASS>
     <CLSNAME>ZCL_VO_QUANTITY_MATERIAL</CLSNAME>
     <LANGU>E</LANGU>
-    <DESCRIPT>UOM</DESCRIPT>
+    <DESCRIPT>Immutable value object representing quantity of material</DESCRIPT>
     <STATE>1</STATE>
     <CLSCCINCL>X</CLSCCINCL>
     <FIXPT>X</FIXPT>

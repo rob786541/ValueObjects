@@ -5,7 +5,7 @@
    <VSEOCLASS>
     <CLSNAME>ZCL_VO_QUANTITY</CLSNAME>
     <LANGU>E</LANGU>
-    <DESCRIPT>Immutable value object representing quantity</DESCRIPT>
+    <DESCRIPT>Immutable value object representing quantity like weight, le</DESCRIPT>
     <STATE>1</STATE>
     <CLSCCINCL>X</CLSCCINCL>
     <FIXPT>X</FIXPT>

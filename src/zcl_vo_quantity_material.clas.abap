@@ -1,3 +1,4 @@
+"! Immutable value object representing quantity of material
 CLASS zcl_vo_quantity_material DEFINITION PUBLIC INHERITING FROM zcl_value_object CREATE PUBLIC.
 
   PUBLIC SECTION.
