@@ -8,7 +8,6 @@ This repository provides a collection of value objects, including:
 * [Mass quantity for materials](src/zcl_vo_quantity_material_mass.clas.abap)
 * [Currency](src/zcl_vo_currency.clas.abap)
 * [Money](src/zcl_vo_money.clas.abap)
-* ...
 
 The [abstract superclass](src/zcl_value_object.clas.abap) provides core functionality for all value objects. All classes use the same [exception class](src/zcx_value_object.clas.abap).
 
