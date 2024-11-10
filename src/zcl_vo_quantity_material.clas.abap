@@ -2,8 +2,6 @@
 CLASS zcl_vo_quantity_material DEFINITION PUBLIC INHERITING FROM zcl_value_object CREATE PUBLIC.
 
   PUBLIC SECTION.
-    " The instantiation costs 2 db selects each time. There is no buffer.
-    " ZCL_VO_QUANTITY_MATERIAL_MASS could be faster for many objects.
     METHODS constructor
       IMPORTING i_quantity TYPE decfloat34
                 i_material TYPE matnr
@@ -21,25 +19,27 @@ CLASS zcl_vo_quantity_material DEFINITION PUBLIC INHERITING FROM zcl_value_objec
       RAISING   zcx_value_object.
 
     METHODS add
-      IMPORTING i_quantity      TYPE REF TO zcl_vo_quantity
+      IMPORTING i_other         TYPE REF TO zcl_vo_quantity
       RETURNING VALUE(r_result) TYPE REF TO zcl_vo_quantity
       RAISING   zcx_value_object.
 
     METHODS sub
-      IMPORTING i_quantity      TYPE REF TO zcl_vo_quantity
+      IMPORTING i_other         TYPE REF TO zcl_vo_quantity
       RETURNING VALUE(r_result) TYPE REF TO zcl_vo_quantity
       RAISING   zcx_value_object.
 
     METHODS gt
-      IMPORTING i_quantity      TYPE REF TO zcl_vo_quantity
+      IMPORTING i_other         TYPE REF TO zcl_vo_quantity
       RETURNING VALUE(r_result) TYPE abap_bool
       RAISING   zcx_value_object.
 
     METHODS ge
-      IMPORTING i_quantity      TYPE REF TO zcl_vo_quantity
+      IMPORTING i_other         TYPE REF TO zcl_vo_quantity
       RETURNING VALUE(r_result) TYPE abap_bool
       RAISING   zcx_value_object.
 
+    " The call costs 2 db selects for each instance if i_uom is different
+    " ZCL_VO_QUANTITY_MATERIAL_MASS could be faster for many objects.
     METHODS get_quantity
       IMPORTING i_uom           TYPE REF TO zcl_vo_uom OPTIONAL
       RETURNING VALUE(r_result) TYPE decfloat34
@@ -61,23 +61,21 @@ CLASS zcl_vo_quantity_material DEFINITION PUBLIC INHERITING FROM zcl_value_objec
     METHODS create_hash REDEFINITION.
     METHODS is_valid    REDEFINITION.
 
-    METHODS create_base_unit
-      IMPORTING i_material      TYPE matnr
-      RETURNING VALUE(r_result) TYPE REF TO zcl_vo_uom
+    METHODS read_from_db
+      IMPORTING i_material TYPE matnr OPTIONAL
       RAISING   zcx_value_object.
 
-    METHODS create_base_quantity
-      IMPORTING i_uom           TYPE REF TO zcl_vo_uom
-      RETURNING VALUE(r_result) TYPE decfloat34.
-
     CLASS-DATA alternatives TYPE SORTED TABLE OF I_ProductAlternativeUoM WITH UNIQUE KEY Product AlternativeUnit.
+    CLASS-DATA base_units   TYPE SORTED TABLE OF i_product WITH UNIQUE KEY Product.
 
   PRIVATE SECTION.
+    METHODS create_base_quantity
+      RETURNING VALUE(r_result) TYPE REF TO zcl_vo_quantity
+      RAISING   zcx_value_object.
+
+    DATA quantity      TYPE REF TO zcl_vo_quantity.
     DATA material      TYPE matnr.
-    DATA quantity      TYPE decfloat34.
-    DATA uom           TYPE REF TO zcl_vo_uom.
-    DATA base_uom      TYPE REF TO zcl_vo_uom.
-    DATA base_quantity TYPE decfloat34.
+    DATA base_quantity TYPE REF TO zcl_vo_quantity.
 
 ENDCLASS.
 
@@ -85,7 +83,8 @@ ENDCLASS.
 CLASS zcl_vo_quantity_material IMPLEMENTATION.
   METHOD create_hash.
     TRY.
-        FINAL(quantity_in_base_unit) = |{ get_quantity( base_uom ) NUMBER = RAW }|.
+        create_base_quantity( ).
+        FINAL(quantity_in_base_unit) = |{ base_quantity->get_quantity( ) NUMBER = RAW }|.
         add_to_hash( REF #( quantity_in_base_unit ) ).
         add_to_hash( REF #( material ) ).
         r_result = build_hash( ).
@@ -95,49 +94,48 @@ CLASS zcl_vo_quantity_material IMPLEMENTATION.
   ENDMETHOD.
 
   METHOD is_valid.
-    r_result = xsdbool( quantity >= 0 ).
+    r_result = abap_true.
   ENDMETHOD.
 
   METHOD to_string.
-    r_result = conv_to_string( quantity ).
+    r_result = quantity->to_string( ).
   ENDMETHOD.
 
   METHOD constructor.
     super->constructor( ).
-    uom = i_uom.
-    quantity = i_quantity.
+    quantity = NEW #( i_quantity                = i_quantity
+                      i_uom                     = i_uom
+                      i_dimmension_check_active = abap_false ).
     material = i_material.
-    IF NOT is_valid( ).
-      RAISE EXCEPTION TYPE zcx_value_object MESSAGE e013(z_value_object) WITH to_string( ).
-    ENDIF.
-    base_uom = create_base_unit( material ).
-    base_quantity = create_base_quantity( base_uom ).
   ENDMETHOD.
 
   METHOD get_quantity.
-    IF i_uom IS NOT BOUND OR uom->is_equal( i_uom ).
-      r_result = quantity.
+    IF i_uom IS NOT BOUND OR quantity->get_uom( )->is_equal( i_uom ).
+      r_result = quantity->get_quantity( ).
       RETURN.
-    ELSEIF base_uom->is_equal( i_uom ) AND base_quantity <> 0.
-      r_result = base_quantity.
+    ENDIF.
+    create_base_quantity( ).
+    IF base_quantity->get_uom( )->is_equal( i_uom ).
+      r_result = base_quantity->get_quantity( ).
       RETURN.
     ENDIF.
     " it is not possible to convert between two alternative units directly. In this case,
     " we need to convert alternative unit -> base unit -> alternative unit
-    DATA(qty) = COND #( WHEN NOT base_uom->is_equal( uom ) AND NOT base_uom->is_equal( i_uom )
-                        THEN base_quantity
-                        ELSE quantity ).
-    DATA(alternative_unit) = COND #( WHEN base_uom->is_equal( i_uom )
-                                     THEN uom->get_in( )
+    DATA(qty) = COND #( WHEN NOT base_quantity->get_uom( )->is_equal( quantity->get_uom( ) )
+                         AND NOT base_quantity->get_uom( )->is_equal( i_uom )
+                        THEN base_quantity->get_quantity( )
+                        ELSE quantity->get_quantity( ) ).
+    DATA(alternative_unit) = COND #( WHEN base_quantity->get_uom( )->is_equal( i_uom )
+                                     THEN quantity->get_uom( )->get_in( )
                                      ELSE i_uom->get_in( ) ).
     ASSIGN alternatives[ Product         = material
                          AlternativeUnit = alternative_unit ] TO FIELD-SYMBOL(<alternative>).
     IF sy-subrc <> 0.
       RAISE EXCEPTION TYPE zcx_value_object MESSAGE e004(z_value_object) WITH i_uom->to_string( ) |{ material ALPHA = OUT }|.
     ENDIF.
-    r_result = COND #( WHEN alternative_unit = uom->get_in( )
-                       THEN <alternative>-QuantityNumerator / <alternative>-QuantityDenominator * qty    " from ALTME to MEINS
-                       ELSE <alternative>-QuantityDenominator / <alternative>-QuantityNumerator * qty ). " from MEINS to ALTME
+    r_result = COND #( WHEN alternative_unit = quantity->get_uom( )->get_in( )
+                       THEN <alternative>-QuantityNumerator / <alternative>-QuantityDenominator * qty    " alternative unit -> base unit
+                       ELSE <alternative>-QuantityDenominator / <alternative>-QuantityNumerator * qty ). " base unit -> alternative unit
     " maybe there is a way to programme this method more elegantly
   ENDMETHOD.
 
@@ -152,63 +150,74 @@ CLASS zcl_vo_quantity_material IMPLEMENTATION.
     ENDIF.
   ENDMETHOD.
 
-  METHOD create_base_unit.
-    SELECT SINGLE baseunit FROM i_product
-      WHERE Product = @i_material
-      INTO @FINAL(base_unit).
-    IF sy-subrc <> 0.
-      RAISE EXCEPTION TYPE zcx_value_object MESSAGE e005(z_value_object) WITH |{ i_material ALPHA = OUT }|.
-    ENDIF.
-    r_result = NEW #( base_unit ).
-  ENDMETHOD.
-
   METHOD create_base_quantity.
-    SELECT Product, AlternativeUnit, QuantityNumerator, QuantityDenominator
-      FROM I_ProductAlternativeUoM
-      WHERE Product = @material
-      INTO CORRESPONDING FIELDS OF TABLE @alternatives.
-    ASSERT sy-subrc = 0.
+    IF base_quantity IS BOUND.
+      RETURN.
+    ENDIF.
+    read_from_db( material ).
+    ASSIGN base_units[ Product = material ]-baseunit TO FIELD-SYMBOL(<base_unit>).
+    IF sy-subrc <> 0.
+      RAISE EXCEPTION TYPE zcx_value_object MESSAGE e005(z_value_object) WITH |{ material ALPHA = OUT }|.
+    ENDIF.
+    IF quantity->get_uom( )->is_equal( NEW zcl_vo_uom( <base_unit> ) ).
+      base_quantity = quantity.
+      RETURN.
+    ENDIF.
+    ASSIGN alternatives[ Product         = material
+                         AlternativeUnit = quantity->get_uom( )->get_in( ) ] TO FIELD-SYMBOL(<alternative>).
     TRY.
-        r_result = get_quantity( i_uom ).
+        base_quantity = NEW #(
+            i_quantity                = <alternative>-QuantityNumerator / <alternative>-QuantityDenominator * quantity->get_quantity( )
+            i_uom                     = NEW #( <base_unit> )
+            i_dimmension_check_active = abap_false ).
       CATCH zcx_value_object.
         RAISE SHORTDUMP NEW cx_sy_create_object_error( ).
     ENDTRY.
   ENDMETHOD.
 
   METHOD add.
-    ASSERT i_quantity IS BOUND.
-    r_result = NEW #( i_quantity = quantity + i_quantity->get_quantity( uom )
-                      i_uom      = uom ).
+    r_result = quantity->add( i_other ).
   ENDMETHOD.
 
   METHOD ge.
-    ASSERT i_quantity IS BOUND.
-    r_result = xsdbool( quantity >= i_quantity->get_quantity( uom ) ).
+    r_result = quantity->ge( i_other ).
   ENDMETHOD.
 
   METHOD gt.
-    ASSERT i_quantity IS BOUND.
-    r_result = xsdbool( quantity > i_quantity->get_quantity( uom ) ).
+    r_result = quantity->gt( i_other ).
   ENDMETHOD.
 
   METHOD sub.
-    ASSERT i_quantity IS BOUND.
-    r_result = NEW #( i_quantity = quantity - i_quantity->get_quantity( uom )
-                      i_uom      = uom ).
+    r_result = quantity->sub( i_other ).
   ENDMETHOD.
 
   METHOD to_string_empty_for_zero.
-    FINAL(l_uom) = COND #( WHEN i_uom IS BOUND THEN i_uom ELSE uom ).
-    r_result = conv_to_string( i_return_empty_for_zero = abap_true
-                               i_value                 = get_quantity( l_uom ) ).
+    r_result = quantity->to_string_empty_for_zero( i_uom ).
   ENDMETHOD.
 
   METHOD to_string_with_uom.
-    FINAL(l_uom) = COND #( WHEN i_uom IS BOUND THEN i_uom ELSE uom ).
-    r_result = |{ conv_to_string( get_quantity( l_uom ) ) } { l_uom->get_out( ) }|.
+    r_result = quantity->to_string_with_uom( i_uom ).
   ENDMETHOD.
 
   METHOD get_uom.
-    r_result = uom.
+    r_result = quantity->get_uom( ).
+  ENDMETHOD.
+
+  METHOD read_from_db.
+    DATA materials TYPE RANGE OF matnr.
+    IF i_material IS NOT INITIAL.
+      materials = VALUE #( ( sign = 'I' option = 'EQ' low = i_material ) ).
+    ENDIF.
+    SELECT product, baseunit FROM i_product
+      WHERE Product IN @materials
+      INTO CORRESPONDING FIELDS OF TABLE @base_units.
+    IF sy-subrc <> 0.
+      RAISE EXCEPTION TYPE zcx_value_object MESSAGE e005(z_value_object) WITH |{ material ALPHA = OUT }|.
+    ENDIF.
+    SELECT Product, AlternativeUnit, QuantityNumerator, QuantityDenominator
+      FROM I_ProductAlternativeUoM
+      WHERE Product IN @materials
+      INTO CORRESPONDING FIELDS OF TABLE @alternatives.
+    ASSERT sy-subrc = 0.
   ENDMETHOD.
 ENDCLASS.

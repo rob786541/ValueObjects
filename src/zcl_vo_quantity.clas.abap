@@ -5,8 +5,9 @@ CLASS zcl_vo_quantity DEFINITION PUBLIC INHERITING FROM zcl_value_object CREATE 
     CLASS-METHODS class_constructor.
 
     METHODS constructor
-      IMPORTING i_quantity TYPE decfloat34
-                i_uom      TYPE REF TO zcl_vo_uom
+      IMPORTING i_quantity                TYPE decfloat34
+                i_uom                     TYPE REF TO zcl_vo_uom
+                i_dimmension_check_active TYPE abap_bool DEFAULT abap_true
       RAISING   zcx_value_object.
 
     METHODS to_string_with_uom
@@ -20,22 +21,22 @@ CLASS zcl_vo_quantity DEFINITION PUBLIC INHERITING FROM zcl_value_object CREATE 
       RAISING   zcx_value_object.
 
     METHODS add
-      IMPORTING i_quantity      TYPE REF TO zcl_vo_quantity
+      IMPORTING i_other         TYPE REF TO zcl_vo_quantity
       RETURNING VALUE(r_result) TYPE REF TO zcl_vo_quantity
       RAISING   zcx_value_object.
 
     METHODS sub
-      IMPORTING i_quantity      TYPE REF TO zcl_vo_quantity
+      IMPORTING i_other         TYPE REF TO zcl_vo_quantity
       RETURNING VALUE(r_result) TYPE REF TO zcl_vo_quantity
       RAISING   zcx_value_object.
 
     METHODS gt
-      IMPORTING i_quantity      TYPE REF TO zcl_vo_quantity
+      IMPORTING i_other         TYPE REF TO zcl_vo_quantity
       RETURNING VALUE(r_result) TYPE abap_bool
       RAISING   zcx_value_object.
 
     METHODS ge
-      IMPORTING i_quantity      TYPE REF TO zcl_vo_quantity
+      IMPORTING i_other         TYPE REF TO zcl_vo_quantity
       RETURNING VALUE(r_result) TYPE abap_bool
       RAISING   zcx_value_object.
 
@@ -71,7 +72,8 @@ CLASS zcl_vo_quantity DEFINITION PUBLIC INHERITING FROM zcl_value_object CREATE 
       RAISING   zcx_value_object.
 
     METHODS check_is_dimension_supported
-      RAISING zcx_value_object.
+      IMPORTING i_dimmension_check_active TYPE abap_bool
+      RAISING   zcx_value_object.
 
 ENDCLASS.
 
@@ -113,14 +115,14 @@ CLASS zcl_vo_quantity IMPLEMENTATION.
   ENDMETHOD.
 
   METHOD add.
-    ASSERT i_quantity IS BOUND.
-    r_result = NEW #( i_quantity = quantity + i_quantity->get_quantity( uom )
+    ASSERT i_other IS BOUND.
+    r_result = NEW #( i_quantity = quantity + i_other->get_quantity( uom )
                       i_uom      = uom ).
   ENDMETHOD.
 
   METHOD sub.
-    ASSERT i_quantity IS BOUND.
-    r_result = NEW #( i_quantity = quantity - i_quantity->get_quantity( uom )
+    ASSERT i_other IS BOUND.
+    r_result = NEW #( i_quantity = quantity - i_other->get_quantity( uom )
                       i_uom      = uom ).
   ENDMETHOD.
 
@@ -133,7 +135,7 @@ CLASS zcl_vo_quantity IMPLEMENTATION.
     super->constructor( ).
     uom = i_uom.
     quantity = i_quantity.
-    check_is_dimension_supported( ).
+    check_is_dimension_supported( i_dimmension_check_active ).
     IF NOT is_valid( ).
       RAISE EXCEPTION TYPE zcx_value_object MESSAGE e013(z_value_object) WITH to_string( ).
     ENDIF.
@@ -144,13 +146,13 @@ CLASS zcl_vo_quantity IMPLEMENTATION.
   ENDMETHOD.
 
   METHOD gt.
-    ASSERT i_quantity IS BOUND.
-    r_result = xsdbool( quantity > i_quantity->get_quantity( uom ) ).
+    ASSERT i_other IS BOUND.
+    r_result = xsdbool( quantity > i_other->get_quantity( uom ) ).
   ENDMETHOD.
 
   METHOD ge.
-    ASSERT i_quantity IS BOUND.
-    r_result = xsdbool( quantity >= i_quantity->get_quantity( uom ) ).
+    ASSERT i_other IS BOUND.
+    r_result = xsdbool( quantity >= i_other->get_quantity( uom ) ).
   ENDMETHOD.
 
   METHOD is_valid.
@@ -174,6 +176,9 @@ CLASS zcl_vo_quantity IMPLEMENTATION.
   ENDMETHOD.
 
   METHOD check_is_dimension_supported.
+    IF i_dimmension_check_active = abap_false.
+      RETURN.
+    ENDIF.
     IF uom->get_si_unit( ) IS INITIAL.
       RAISE EXCEPTION TYPE zcx_value_object MESSAGE e012(z_value_object) WITH uom->get_dimension( ).
     ENDIF.

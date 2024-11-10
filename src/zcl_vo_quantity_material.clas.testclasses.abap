@@ -8,12 +8,13 @@ CLASS ltcl_quantity_material DEFINITION FINAL
     DATA cut TYPE REF TO zcl_vo_quantity_material.
     DATA e   TYPE REF TO zcx_value_object.
 
-    METHODS kar1    FOR TESTING.
-    METHODS kar2    FOR TESTING.
-    METHODS kar3    FOR TESTING.
-    METHODS kg1     FOR TESTING.
-    METHODS kar_kg1 FOR TESTING.
-    METHODS kar_l1  FOR TESTING.
+    METHODS constructor1 FOR TESTING.
+    METHODS kar1         FOR TESTING.
+    METHODS kar2         FOR TESTING.
+    METHODS kar3         FOR TESTING.
+    METHODS kg1          FOR TESTING.
+    METHODS kar_kg1      FOR TESTING.
+    METHODS kar_l1       FOR TESTING.
 
     CLASS-METHODS class_setup.
 
@@ -29,6 +30,16 @@ CLASS ltcl_quantity_material IMPLEMENTATION.
                                 ( AlternativeUnit = 'ST' QuantityNumerator = '1' QuantityDenominator = '1' )
                                 ( AlternativeUnit = 'KG' QuantityNumerator = '12' QuantityDenominator = '14' ) ) ).
     double->insert_test_data( VALUE tty_product( ( product = '4711' BaseUnit = 'ST' ) ) ).
+  ENDMETHOD.
+
+  METHOD constructor1.
+    TRY.
+        cut = NEW #( i_quantity = '20'
+                     i_material = '4711'
+                     i_uom      = NEW #( 'ST' ) ).
+      CATCH zcx_value_object.
+        cl_abap_unit_assert=>fail( ).
+    ENDTRY.
   ENDMETHOD.
 
   METHOD kar1.

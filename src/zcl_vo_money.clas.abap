@@ -16,12 +16,12 @@ CLASS zcl_vo_money DEFINITION PUBLIC INHERITING FROM zcl_value_object CREATE PUB
       RETURNING VALUE(r_result) TYPE string.
 
     METHODS add
-      IMPORTING i_amount        TYPE REF TO zcl_vo_money
+      IMPORTING i_other        TYPE REF TO zcl_vo_money
       RETURNING VALUE(r_result) TYPE REF TO zcl_vo_money
       RAISING   zcx_value_object.
 
     METHODS sub
-      IMPORTING i_amount        TYPE REF TO zcl_vo_money
+      IMPORTING i_other        TYPE REF TO zcl_vo_money
       RETURNING VALUE(r_result) TYPE REF TO zcl_vo_money
       RAISING   zcx_value_object.
 
@@ -80,10 +80,10 @@ CLASS zcl_vo_money IMPLEMENTATION.
   ENDMETHOD.
 
   METHOD add.
-    ASSERT i_amount IS BOUND.
-    check_currency_is_equal( i_amount->get_currency( ) ).
+    ASSERT i_other IS BOUND.
+    check_currency_is_equal( i_other->get_currency( ) ).
     TRY.
-        r_result = NEW #( i_amount   = amount + i_amount->get_amount( )
+        r_result = NEW #( i_amount   = amount + i_other->get_amount( )
                           i_currency = currency ).
       CATCH zcx_value_object.
         RAISE SHORTDUMP NEW cx_sy_create_object_error( ).
@@ -91,10 +91,10 @@ CLASS zcl_vo_money IMPLEMENTATION.
   ENDMETHOD.
 
   METHOD sub.
-    ASSERT i_amount IS BOUND.
-    check_currency_is_equal( i_amount->get_currency( ) ).
+    ASSERT i_other IS BOUND.
+    check_currency_is_equal( i_other->get_currency( ) ).
     TRY.
-        r_result = NEW #( i_amount   = amount - i_amount->get_amount( )
+        r_result = NEW #( i_amount   = amount - i_other->get_amount( )
                           i_currency = currency ).
       CATCH zcx_value_object.
         RAISE SHORTDUMP NEW cx_sy_create_object_error( ).

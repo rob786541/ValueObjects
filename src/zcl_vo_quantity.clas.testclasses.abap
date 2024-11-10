@@ -11,6 +11,7 @@ CLASS ltcl_quantity DEFINITION FINAL
     METHODS different_dimms1 FOR TESTING.
     METHODS different_dimms2 FOR TESTING.
     METHODS different_dimms3 FOR TESTING.
+    METHODS different_dimms4 FOR TESTING.
     METHODS get_quantity4    FOR TESTING.
     METHODS get_quantity5    FOR TESTING.
     METHODS get_quantity6    FOR TESTING.
@@ -115,6 +116,17 @@ CLASS ltcl_quantity IMPLEMENTATION.
         cl_abap_unit_assert=>fail( ).
       CATCH zcx_value_object INTO e.
         cl_abap_unit_assert=>assert_equals( exp = 'Dimensions of KG and M are different'
+                                            act = e->get_text( ) ).
+    ENDTRY.
+  ENDMETHOD.
+
+  METHOD different_dimms4.
+    TRY.
+        cut = NEW #( i_quantity = 12
+                     i_uom      = NEW #( 'PC' ) ).
+        cl_abap_unit_assert=>fail( ).
+      CATCH zcx_value_object INTO e.
+        cl_abap_unit_assert=>assert_equals( exp = 'Dimension AAAADL is not supported'
                                             act = e->get_text( ) ).
     ENDTRY.
   ENDMETHOD.
