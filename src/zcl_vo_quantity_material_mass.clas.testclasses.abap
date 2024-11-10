@@ -1,4 +1,4 @@
-CLASS ltcl_quantity_material DEFINITION FINAL
+CLASS ltcl_quantity_material_mass DEFINITION FINAL
   FOR TESTING RISK LEVEL HARMLESS DURATION SHORT.
 
   PRIVATE SECTION.
@@ -20,7 +20,7 @@ CLASS ltcl_quantity_material DEFINITION FINAL
 ENDCLASS.
 
 
-CLASS ltcl_quantity_material IMPLEMENTATION.
+CLASS ltcl_quantity_material_mass IMPLEMENTATION.
   METHOD class_setup.
     DATA(double) = cl_osql_test_environment=>create( VALUE #( ( 'I_PRODUCTALTERNATIVEUOM' ) ( 'I_PRODUCT' ) ) ).
     double->insert_test_data(
