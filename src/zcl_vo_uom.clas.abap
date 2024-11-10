@@ -130,6 +130,7 @@ CLASS zcl_vo_uom IMPLEMENTATION.
   ENDMETHOD.
 
   METHOD class_constructor.
+    " Is it possible to read all information with one select only?
     SELECT Language, UnitOfMeasureCommercialName, UnitOfMeasure
       FROM I_UnitOfMeasureCommercialName
       INTO CORRESPONDING FIELDS OF TABLE @unitofmeasurecommercialname.

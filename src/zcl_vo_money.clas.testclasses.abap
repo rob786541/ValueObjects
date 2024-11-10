@@ -16,6 +16,9 @@ CLASS ltcl_money DEFINITION FINAL
     methods to_string3 for testing.
     METHODS add1       FOR TESTING.
     METHODS add2       FOR TESTING.
+    METHODS sub1       FOR TESTING.
+    METHODS sub2       FOR TESTING.
+    METHODS sub3       FOR TESTING.
     METHODS equal1     FOR TESTING.
     METHODS equal2     FOR TESTING.
     METHODS equal3     FOR TESTING.
@@ -114,6 +117,47 @@ CLASS ltcl_money IMPLEMENTATION.
       CATCH zcx_value_object INTO e.
         cl_abap_unit_assert=>assert_equals( exp = 'Currency USD is not equal to EUR'
                                             act = e->get_text( ) ).
+    ENDTRY.
+  ENDMETHOD.
+
+  METHOD sub1.
+    TRY.
+        cut = NEW #( i_amount   = '12.216'
+                     i_currency = NEW #( 'EUR' ) ).
+        DATA(other) = NEW zcl_vo_money( i_amount   = '0.82'
+                                        i_currency = NEW #( 'eur' ) ).
+        cl_abap_unit_assert=>assert_equals( exp = '11,396'
+                                            act = cut->sub( other )->to_string( ) ).
+      CATCH zcx_value_object.
+        cl_abap_unit_assert=>fail( ).
+    ENDTRY.
+  ENDMETHOD.
+
+  METHOD sub2.
+    TRY.
+        cut = NEW #( i_amount   = '12.216'
+                     i_currency = NEW #( 'EUR' ) ).
+        DATA(other) = NEW zcl_vo_money( i_amount   = '0.82'
+                                        i_currency = NEW #( 'usd' ) ).
+        cut->sub( other ).
+        cl_abap_unit_assert=>fail( ).
+      CATCH zcx_value_object INTO e.
+        cl_abap_unit_assert=>assert_equals( exp = 'Currency USD is not equal to EUR'
+                                            act = e->get_text( ) ).
+    ENDTRY.
+  ENDMETHOD.
+
+  METHOD sub3.
+    TRY.
+        cut = NEW #( i_amount   = 12
+                     i_currency = NEW #( 'EUR' ) ).
+        DATA(other) = NEW zcl_vo_money( i_amount   = 15
+                                        i_currency = NEW #( 'eur' ) ).
+        cl_abap_unit_assert=>assert_equals( exp = '-3'
+                                            act = cut->sub( other )->to_string( ) ).
+
+      CATCH zcx_value_object INTO e.
+        cl_abap_unit_assert=>fail( ).
     ENDTRY.
   ENDMETHOD.
 

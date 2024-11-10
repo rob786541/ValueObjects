@@ -23,6 +23,9 @@ CLASS ltcl_quantity DEFINITION FINAL
     METHODS add1             FOR TESTING.
     METHODS add2             FOR TESTING.
     METHODS add3             FOR TESTING.
+    METHODS sub1             FOR TESTING.
+    METHODS sub2             FOR TESTING.
+    METHODS sub3             FOR TESTING.
     METHODS to_string1       FOR TESTING.
     METHODS to_string2       FOR TESTING.
     METHODS to_string3       FOR TESTING.
@@ -33,6 +36,8 @@ CLASS ltcl_quantity DEFINITION FINAL
     METHODS equal2           FOR TESTING.
     METHODS equal3           FOR TESTING.
     METHODS equal4           FOR TESTING.
+    METHODS greater1         FOR TESTING.
+    METHODS greater2         FOR TESTING.
     METHODS rounded4         FOR TESTING.
     METHODS rounded5         FOR TESTING.
     METHODS rounded6         FOR TESTING.
@@ -297,6 +302,48 @@ CLASS ltcl_quantity IMPLEMENTATION.
     ENDTRY.
   ENDMETHOD.
 
+  METHOD sub1.
+    TRY.
+        cut = NEW #( i_quantity = 15
+                     i_uom      = NEW #( 'm' ) ).
+        DATA(other) = NEW zcl_vo_quantity( i_quantity = 12
+                                           i_uom      = NEW #( 'm' ) ).
+        cut = cut->sub( other ).
+        cl_abap_unit_assert=>assert_equals( exp = '3'
+                                            act = cut->get_quantity( i_uom = NEW #( 'M' ) ) ).
+      CATCH zcx_value_object.
+        cl_abap_unit_assert=>fail( ).
+    ENDTRY.
+  ENDMETHOD.
+
+  METHOD sub2.
+    TRY.
+        cut = NEW #( i_quantity = 15
+                     i_uom      = NEW #( 'm' ) ).
+        DATA(other) = NEW zcl_vo_quantity( i_quantity = 15
+                                           i_uom      = NEW #( 'mm' ) ).
+        cut = cut->sub( other ).
+        cl_abap_unit_assert=>assert_equals( exp = '0.014985'
+                                            act = cut->get_quantity( i_uom = NEW #( 'km' ) ) ).
+      CATCH zcx_value_object.
+        cl_abap_unit_assert=>fail( ).
+    ENDTRY.
+  ENDMETHOD.
+
+  METHOD sub3.
+    TRY.
+        cut = NEW #( i_quantity = 15
+                     i_uom      = NEW #( 'm' ) ).
+        DATA(other) = NEW zcl_vo_quantity( i_quantity = 16
+                                           i_uom      = NEW #( 'm' ) ).
+        cut = cut->sub( other ).
+        cl_abap_unit_assert=>fail( ).
+      CATCH zcx_value_object INTO e.
+        cl_abap_unit_assert=>assert_equals( exp = 'Quantity -1 is not valid'
+                                            act = e->get_text( ) ).
+    ENDTRY.
+  ENDMETHOD.
+
   METHOD to_string1.
     TRY.
         cut = NEW #( i_quantity = 15
@@ -406,6 +453,32 @@ CLASS ltcl_quantity IMPLEMENTATION.
         DATA(other) = NEW zcl_vo_quantity( i_quantity = '0.00009320567883560009544261512765449773'
                                            i_uom      = NEW #( 'mi' ) ).
         cl_abap_unit_assert=>assert_true( cut->is_equal( other ) ).
+      CATCH zcx_value_object.
+        cl_abap_unit_assert=>fail( ).
+    ENDTRY.
+  ENDMETHOD.
+
+  METHOD greater1.
+    TRY.
+        cut = NEW #( i_quantity = 16
+                     i_uom      = NEW #( 'cm' ) ).
+        DATA(other) = NEW zcl_vo_quantity( i_quantity = 15
+                                           i_uom      = NEW #( 'cm' ) ).
+        cl_abap_unit_assert=>assert_true( cut->gt( other ) ).
+        cl_abap_unit_assert=>assert_false( other->gt( cut ) ).
+      CATCH zcx_value_object.
+        cl_abap_unit_assert=>fail( ).
+    ENDTRY.
+  ENDMETHOD.
+
+  METHOD greater2.
+    TRY.
+        cut = NEW #( i_quantity = 15
+                     i_uom      = NEW #( 'cm' ) ).
+        DATA(other) = NEW zcl_vo_quantity( i_quantity = 15
+                                           i_uom      = NEW #( 'cm' ) ).
+        cl_abap_unit_assert=>assert_false( cut->gt( other ) ).
+        cl_abap_unit_assert=>assert_true( cut->ge( other ) ).
       CATCH zcx_value_object.
         cl_abap_unit_assert=>fail( ).
     ENDTRY.

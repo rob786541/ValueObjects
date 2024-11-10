@@ -23,7 +23,17 @@ CLASS zcl_vo_quantity DEFINITION PUBLIC INHERITING FROM zcl_value_object CREATE 
       RETURNING VALUE(r_result) TYPE REF TO zcl_vo_quantity
       RAISING   zcx_value_object.
 
+    METHODS sub
+      IMPORTING i_quantity      TYPE REF TO zcl_vo_quantity
+      RETURNING VALUE(r_result) TYPE REF TO zcl_vo_quantity
+      RAISING   zcx_value_object.
+
     METHODS gt
+      IMPORTING i_quantity      TYPE REF TO zcl_vo_quantity
+      RETURNING VALUE(r_result) TYPE abap_bool
+      RAISING   zcx_value_object.
+
+    METHODS ge
       IMPORTING i_quantity      TYPE REF TO zcl_vo_quantity
       RETURNING VALUE(r_result) TYPE abap_bool
       RAISING   zcx_value_object.
@@ -107,6 +117,12 @@ CLASS zcl_vo_quantity IMPLEMENTATION.
                       i_uom      = uom ).
   ENDMETHOD.
 
+  METHOD sub.
+    ASSERT i_quantity IS BOUND.
+    r_result = NEW #( i_quantity = quantity - i_quantity->get_quantity( uom )
+                      i_uom      = uom ).
+  ENDMETHOD.
+
   METHOD to_string_with_uom.
     FINAL(l_uom) = COND #( WHEN i_uom IS BOUND THEN i_uom ELSE uom ).
     r_result = |{ conv_to_string( get_quantity( l_uom ) ) } { l_uom->get_out( ) }|.
@@ -129,6 +145,11 @@ CLASS zcl_vo_quantity IMPLEMENTATION.
   METHOD gt.
     ASSERT i_quantity IS BOUND.
     r_result = xsdbool( quantity > i_quantity->get_quantity( uom ) ).
+  ENDMETHOD.
+
+  METHOD ge.
+    ASSERT i_quantity IS BOUND.
+    r_result = xsdbool( quantity >= i_quantity->get_quantity( uom ) ).
   ENDMETHOD.
 
   METHOD is_valid.

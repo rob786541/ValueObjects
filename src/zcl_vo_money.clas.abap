@@ -19,6 +19,11 @@ CLASS zcl_vo_money DEFINITION PUBLIC INHERITING FROM zcl_value_object CREATE PUB
       RETURNING VALUE(r_result) TYPE REF TO zcl_vo_money
       RAISING   zcx_value_object.
 
+    METHODS sub
+      IMPORTING i_amount        TYPE REF TO zcl_vo_money
+      RETURNING VALUE(r_result) TYPE REF TO zcl_vo_money
+      RAISING   zcx_value_object.
+
     METHODS get_amount
       RETURNING VALUE(r_result) TYPE decfloat34
       RAISING   zcx_value_object.
@@ -84,6 +89,17 @@ CLASS zcl_vo_money IMPLEMENTATION.
     ENDTRY.
   ENDMETHOD.
 
+  METHOD sub.
+    ASSERT i_amount IS BOUND.
+    check_currency_is_equal( i_amount->get_currency( ) ).
+    TRY.
+        r_result = NEW #( i_amount   = amount - i_amount->get_amount( )
+                          i_currency = currency ).
+      CATCH zcx_value_object.
+        RAISE SHORTDUMP NEW cx_sy_create_object_error( ).
+    ENDTRY.
+  ENDMETHOD.
+
   METHOD check_currency_is_equal.
     IF NOT currency->is_equal( i_currency ).
       RAISE EXCEPTION TYPE zcx_value_object MESSAGE e008(z_value_object) WITH i_currency->to_string( ) currency->to_string( ).
@@ -114,4 +130,6 @@ CLASS zcl_vo_money IMPLEMENTATION.
     " positive, negative and zero are valid values for amount
     r_result = abap_true.
   ENDMETHOD.
+
+
 ENDCLASS.
